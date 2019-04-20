@@ -8,13 +8,17 @@ using Chaotx.Mgx.View;
 
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Chaotx.Minesweeper {
     public class MapView : FadingView {
+        public TimeSpan ElapsedTime {get; private set;}
         public GameMap Map {get;}
         public int Width {get;}
         public int Height {get;}
 
+        private SpriteFont _font;
+        private Texture2D _blank;
         private Texture2D hiddenTexture;
         private Texture2D[] revealedTextures;
         private Dictionary<MenuItem, Point> itemMap;
@@ -33,6 +37,9 @@ namespace Chaotx.Minesweeper {
             hiddenTexture = content.Load<Texture2D>("textures/tile_hid_0");
             revealedTextures = new Texture2D[10];
 
+            _font = Content.Load<SpriteFont>("fonts/menu_font");
+            _blank = Content.Load<Texture2D>("textures/blank");
+
             for(int i = 0; i < 10; ++i)
                 revealedTextures[i] = content.Load<Texture2D>("textures/tile_rev_"+ i);
 
@@ -40,6 +47,7 @@ namespace Chaotx.Minesweeper {
         }
 
         public void init() {
+            ElapsedTime = new TimeSpan();
             itemMap = new Dictionary<MenuItem, Point>();
             int w = Width/Map.Tiles.Length;
             int h = Height/Map.Tiles[0].Length;
@@ -50,10 +58,14 @@ namespace Chaotx.Minesweeper {
             hPane.HGrow = Width/(float)Graphics.Viewport.Width;
             hPane.VGrow = Height/(float)Graphics.Viewport.Height;
 
-            for(int i = MainContainer.Children.Count-1; i >= 0; --i)
-                MainContainer.Remove(MainContainer.Children[i]);
+            StackPane sPane = new StackPane(hPane);
+            sPane.HGrow = sPane.VGrow = 1;
 
-            MainContainer.Add(hPane);
+            VPane vPane = new VPane(new InfoPane(Map, _font, _blank), sPane);
+            vPane.HGrow = vPane.VGrow = 1;
+
+            MainContainer.Clear();
+            MainContainer.Add(vPane);
 
             for(int x = 0; x < Map.Tiles.Length; ++x) {
                 ListMenu vList = new ListMenu();
@@ -61,10 +73,13 @@ namespace Chaotx.Minesweeper {
                 vList.KeyBoardEnabled = false;
                 hPane.Add(vList);
 
-                for(int y = 0; y < Map.Tiles.Length; ++y) {
+                for(int y = 0; y < Map.Tiles[0].Length; ++y) {
                     MenuItem item = new MenuItem(hiddenTexture, w, h);
                     itemMap.Add(item, new Point(x, y));
                     vList.AddItem(item);
+
+                    item.FocusGain += (s, a) => item.Image.Color = Color.Silver;
+                    item.FocusLoss += (s, a) => item.Image.Color = Color.White;
 
                     item.Action += (s, a) => {
                         Point p = itemMap[item];
@@ -82,6 +97,12 @@ namespace Chaotx.Minesweeper {
                     };
                 }
             }
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            ElapsedTime += gameTime.ElapsedGameTime;
+            Map.ElapsedTime = ElapsedTime;
         }
     }
 }

@@ -45,7 +45,6 @@ namespace Chaotx.Minesweeper {
 
         public void Reveal() {
             if(!IsHidden) return;
-            if(HasMine) Map.HiddenMines--;
             IsHidden = false;
             OnRevealed();
         }

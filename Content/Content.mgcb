@@ -13,6 +13,25 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin fonts/menu_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/menu_font.spritefont
+
+#begin textures/blank.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/blank.png
+
 #begin textures/tile_hid_0.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -10,11 +10,15 @@ namespace Chaotx.Minesweeper {
     }
 
     public class GameMap {
+        public TimeSpan ElapsedTime {get; set;}
         public MapTile[][] Tiles {get; private set;}
-        public int HiddenMines {get; set;}
+        public int RevealedTiles {get; private set;}
+        public int TotalTiles {get; private set;}
+        public int RevealedMines {get; private set;}
         public int TotalMines {get; private set;}
         public int Width {get; private set;}
         public int Height {get; private set;}
+
 
         public GameMap(MapDifficulty difficulty) {
             switch(difficulty) {
@@ -33,6 +37,8 @@ namespace Chaotx.Minesweeper {
         public void initMap(int w, int h, float d) {
             Width = w;
             Height = h;
+            TotalTiles = w*h;
+            RevealedTiles = 0;
             Tiles = new MapTile[w][];
             List<Point> points = new List<Point>();
 
@@ -48,13 +54,24 @@ namespace Chaotx.Minesweeper {
             Point p;
             Random rng = new Random();
             int r, c = (int)(w*h*d + 0.5f);
-            TotalMines = HiddenMines = c;
+            TotalMines = c;
+            RevealedMines = 0;
 
             for(int i = 0; i < c; ++i) {
                 r = rng.Next(points.Count);
                 p = points[r];
                 points.RemoveAt(r);
                 Tiles[p.X][p.Y] = new MapTile(this, p.X, p.Y, true);
+            }
+
+            for(int y, x = 0; x < w; ++x) {
+                for(y = 0; y < h; ++y) {
+                    Tiles[x][y].Revealed += (s, a) => {
+                        MapTile t = (MapTile)s;
+                        ++RevealedTiles;
+                        if(t.HasMine) ++RevealedMines; // TODO
+                    };
+                }
             }
         }
 
