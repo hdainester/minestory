@@ -9,9 +9,10 @@ using Chaotx.Mgx.View;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Microsoft.Xna.Framework.Input;
 
 namespace Chaotx.Minesweeper {
-    public class MapView : FadingView {
+    public class MapView : GameView {
         public TimeSpan ElapsedTime {get; private set;}
         public GameMap Map {get;}
         public int Width {get;}
@@ -64,8 +65,20 @@ namespace Chaotx.Minesweeper {
             VPane vPane = new VPane(new InfoPane(Map, _font, _blank), sPane);
             vPane.HGrow = vPane.VGrow = 1;
 
+            ListMenu menu = new ListMenu();
+            menu.KeyReleased += (s, a) => {
+                if(a.Key == Keys.Escape) {
+                    ConfirmView confirmView = new ConfirmView(this, "Exit Running Game?");
+                    confirmView.YesAction = () => Close();
+                    confirmView.NoAction = () => InputDisabled = false;
+                    InputDisabled = true;
+                    Manager.Add(confirmView);
+                }
+            };
+
             MainContainer.Clear();
             MainContainer.Add(vPane);
+            MainContainer.Add(menu);
 
             for(int x = 0; x < Map.Tiles.Length; ++x) {
                 ListMenu vList = new ListMenu();
@@ -101,8 +114,11 @@ namespace Chaotx.Minesweeper {
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
-            ElapsedTime += gameTime.ElapsedGameTime;
-            Map.ElapsedTime = ElapsedTime;
+
+            if(State == ViewState.Open) {
+                ElapsedTime += gameTime.ElapsedGameTime;
+                Map.ElapsedTime = ElapsedTime;
+            }
         }
     }
 }

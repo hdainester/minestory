@@ -18,14 +18,9 @@ namespace Chaotx.Minesweeper {
         }
 
         protected override void LoadContent() {
-            int vw = (int)(GraphicsDevice.Viewport.Width*0.75f);
-            int vh = (int)(GraphicsDevice.Viewport.Height*0.75f);
-
-            GameMap gameMap = new GameMap(MapDifficulty.Easy);
-            MapView mapView = new MapView(gameMap, vw, vh, Content, GraphicsDevice);
-
+            MainMenuView menuView = new MainMenuView(Content, GraphicsDevice);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            viewControl.Add(mapView);
+            viewControl.Add(menuView);
         }
 
         protected override void Update(GameTime gameTime) {
