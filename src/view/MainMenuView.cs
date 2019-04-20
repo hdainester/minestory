@@ -14,9 +14,10 @@ namespace Chaotx.Minesweeper {
         private ImageItem background;
         public Minesweeper Game {get;}
 
-        public MainMenuView(ContentManager content, GraphicsDevice graphics) : base(content, graphics) {
+        public MainMenuView(Minesweeper game) : base(game.Content, game.GraphicsDevice) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
+            Game = game;
             Init();
         }
 
@@ -60,7 +61,7 @@ namespace Chaotx.Minesweeper {
             };
 
             settings.Action += (s, a) => {
-                Manager.Add(new SettingsView(this));
+                Manager.Add(new SettingsView(this, Game));
                 Hide();
                 // TODO
             };

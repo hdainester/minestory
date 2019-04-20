@@ -29,8 +29,9 @@ namespace Chaotx.Minesweeper {
         private TextItem musicVolumeValue;
         private TextItem languageValue;
 
+        private Minesweeper game;
 
-        public SettingsView(GameView parent) : base(parent) {
+        public SettingsView(GameView parent, Minesweeper game) : base(parent) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
@@ -42,6 +43,14 @@ namespace Chaotx.Minesweeper {
             audioVolumeValue = new TextItem(font);
             musicVolumeValue = new TextItem(font);
             languageValue = new TextItem(font);
+            width = game.Settings.MapWidth;
+            height = game.Settings.MapHeight;
+            density = game.Settings.MineDensitiy;
+            audioVolume = game.Settings.AudioVolume;
+            musicVolume = game.Settings.MusicVolume;
+            language = game.Settings.Language;
+            difficulty = game.Settings.Difficulty;
+            this.game = game;
             Init();
         }
 
@@ -158,7 +167,11 @@ namespace Chaotx.Minesweeper {
 
             accept.FocusGain += (s, a) => accept.Text.Color = Color.Yellow;
             accept.FocusLoss += (s, a) => accept.Text.Color = Color.White;
-            accept.Action += (s, a) => Close(); // TODO save GameSettings object
+            accept.Action += (s, a) => {
+                game.Settings = CreateGameSettings();
+                FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, game.Settings);
+                Close();
+            };
 
             back.FocusGain += (s, a) => back.Text.Color = Color.Yellow;
             back.FocusLoss += (s, a) => back.Text.Color = Color.White;
@@ -238,11 +251,9 @@ namespace Chaotx.Minesweeper {
         }
 
         public GameSettings CreateGameSettings() {
-            GameSettings settings = difficulty != MapDifficulty.Custom
-                ? new GameSettings(difficulty)
-                : new GameSettings(width, height, density);
-
-            return settings;
+            return new GameSettings(
+                difficulty, width, height, density,
+                audioVolume, musicVolume, language);
         }
 
         private void SetupDifficulty(MapDifficulty d) {
@@ -266,7 +277,7 @@ namespace Chaotx.Minesweeper {
                     difficulty = width == 9 && height == 9 && density == 8 ? MapDifficulty.Easy
                         : width == 16 && height == 16 && density == 16 ? MapDifficulty.Medium
                         : width == 30 && height == 16 && density == 21 ? MapDifficulty.Hard : d;
-                        
+
                     break;
             }
         }
