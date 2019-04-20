@@ -6,7 +6,7 @@ using System;
 
 namespace Chaotx.Minesweeper {
     public enum MapDifficulty {
-        Easy, Medium, Hard
+        Easy, Medium, Hard, Custom
     }
 
     public class GameMap {
@@ -18,7 +18,6 @@ namespace Chaotx.Minesweeper {
         public int TotalMines {get; private set;}
         public int Width {get; private set;}
         public int Height {get; private set;}
-
 
         public GameMap(MapDifficulty difficulty) {
             switch(difficulty) {

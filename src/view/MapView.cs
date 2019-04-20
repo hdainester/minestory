@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.Control.Menu;
@@ -9,7 +10,6 @@ using Chaotx.Mgx.View;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using Microsoft.Xna.Framework.Input;
 
 namespace Chaotx.Minesweeper {
     public class MapView : GameView {

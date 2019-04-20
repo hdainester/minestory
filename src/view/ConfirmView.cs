@@ -18,6 +18,7 @@ namespace Chaotx.Mgx.View {
         private string message;
 
         public ConfirmView(GameView parent, string message) : base(parent) {
+            FadeInTime = FadeOutTime = 500;
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             this.message = message;
@@ -61,6 +62,12 @@ namespace Chaotx.Mgx.View {
             sPane.VAlign = VAlignment.Center;
             sPane.VGrow = 0.2f;
             sPane.HGrow = 1;
+
+            yes.FocusGain += (s, a) => yes.Text.Color = Color.Yellow;
+            yes.FocusGain += (s, a) => yes.Text.Color = Color.White;
+
+            no.FocusGain += (s, a) => no.Text.Color = Color.Yellow;
+            no.FocusGain += (s, a) => no.Text.Color = Color.White;
 
             yes.Action += (s, a) => {
                 YesAction();
