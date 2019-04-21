@@ -12,7 +12,7 @@ using Chaotx.Mgx.Layout;
 
 namespace Chaotx.Minesweeper {
     public class HighscoreView : GameView {
-        public int EntriesPerPage {get; set;} = 3; // TODO test value (default 10)
+        public int EntriesPerPage {get; set;} = 10;
 
         private Minesweeper game;
         private List<VPane> pages;
