@@ -63,11 +63,11 @@ namespace Chaotx.Minesweeper {
             settings.Action += (s, a) => {
                 Manager.Add(new SettingsView(this, Game));
                 Hide();
-                // TODO
             };
 
             highscore.Action += (s, a) => {
-                // TODO
+                Manager.Add(new HighscoreView(Game));
+                Hide();
             };
 
             quit.Action += (s, a) => Close();

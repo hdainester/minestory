@@ -24,12 +24,41 @@ namespace Chaotx.Minesweeper {
         private ViewControl viewControl;
         GraphicsDeviceManager graphics;
 
-
         public Minesweeper() {
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
             viewControl = new ViewControl();
+        }
+
+        public void AddHighscore(Highscore score) {
+            Highscore current;
+            for(int i = 0; i < Scores.Count; ++i) {
+                current = Scores[i];
+                int diff1 = (((int)score.Settings.Difficulty)+1)%5;
+                int diff2 = (((int)current.Settings.Difficulty)+1)%5;
+
+                if(diff1 >= diff2) {
+                    float mines1 = 0;
+                    float mines2 = 0;
+
+                    if(diff1 == diff2) {
+                        mines1 = score.MinesHit/(float)score.TotalMines;
+                        mines2 = current.MinesHit/(float)current.TotalMines;
+                    } else
+
+                    if(diff1 > diff2) {
+                        mines1 = 0;
+                        mines2 = 1;
+                    }
+
+                    if(mines1 < mines2 || mines1 == mines2
+                    && score.Time <= current.Time) {
+                        Scores.Insert(i, score);
+                        break;
+                    }
+                }
+            }
         }
 
         protected override void LoadContent() {

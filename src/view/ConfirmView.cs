@@ -7,7 +7,7 @@ using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 using System;
 
-namespace Chaotx.Mgx.View {
+namespace Chaotx.Minesweeper {
     public class ConfirmView : GameView {
         public Action YesAction {get; set;}
         public Action NoAction {get; set;}

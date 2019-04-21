@@ -44,10 +44,10 @@ namespace Chaotx.Minesweeper {
             for(int i = 0; i < 10; ++i)
                 revealedTextures[i] = content.Load<Texture2D>("textures/tile_rev_"+ i);
 
-            init();
+            Init();
         }
 
-        public void init() {
+        public void Init() {
             ElapsedTime = new TimeSpan();
             itemMap = new Dictionary<MenuItem, Point>();
             int w = Width/Map.Tiles.Length;

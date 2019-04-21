@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Chaotx.Mgx.View {
+using Chaotx.Mgx.View;
+
+namespace Chaotx.Minesweeper {
     public abstract class GameView : FadingView {
         public GameView Parent {get;}
 
