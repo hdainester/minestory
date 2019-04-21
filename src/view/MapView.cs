@@ -14,7 +14,7 @@ using System;
 namespace Chaotx.Minesweeper {
     public class MapView : GameView {
         public TimeSpan ElapsedTime {get; private set;}
-        public GameMap Map {get;}
+        public GameMap Map {get; private set; }
         public int Width {get;}
         public int Height {get;}
 
@@ -24,18 +24,19 @@ namespace Chaotx.Minesweeper {
         private Texture2D[] revealedTextures;
         private Dictionary<MenuItem, Point> itemMap;
 
-        private Minesweeper game;
+        public Minesweeper Game {get;}
+        private GameMap mapTemplate;
 
-        public MapView(GameMap map, Minesweeper game)
-        : this(map, game.GraphicsDevice.Viewport.Width,
+        public MapView(MainMenuView parent, GameMap map, Minesweeper game)
+        : this(parent, map, game.GraphicsDevice.Viewport.Width,
             game.GraphicsDevice.Viewport.Height, game) {}
 
-        public MapView(GameMap map, int width, int height, Minesweeper game)
-        : base(game.Content, game.GraphicsDevice) {
-            Map = map;
+        public MapView(MainMenuView parent, GameMap map, int width, int height, Minesweeper game)
+        : base(parent) {
+            mapTemplate = map;
+            Game = game;
             Width = width;
             Height = height;
-            this.game = game;
             hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");
             revealedTextures = new Texture2D[10];
 
@@ -48,11 +49,10 @@ namespace Chaotx.Minesweeper {
             Init();
         }
 
-        public void Init() {
+        public override void Init() {
             ElapsedTime = new TimeSpan();
             itemMap = new Dictionary<MenuItem, Point>();
-            int w = Width/Map.Tiles.Length;
-            int h = Height/Map.Tiles[0].Length;
+            Map = new GameMap(mapTemplate.Width, mapTemplate.Height, mapTemplate.Density);
 
             HPane hPane = new HPane();
             hPane.HAlign = HAlignment.Center;
@@ -70,17 +70,7 @@ namespace Chaotx.Minesweeper {
             menu.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Escape) {
                     ConfirmView confirmView = new ConfirmView(this, "Exit Running Game?");
-                    confirmView.YesAction = () => {
-                        Close();
-
-                        // TODO temporary spot for testing
-                        Highscore score = new Highscore("Olaf",
-                            Map.RevealedMines, Map.TotalMines,
-                            Map.ElapsedTime, game.Settings);
-
-                        game.AddHighscore(score);
-                        FileManager.SaveHighscores(Minesweeper.SCORES_PATH, game.Scores);
-                    };
+                    confirmView.YesAction = () => Close();
 
                     confirmView.NoAction = () => InputDisabled = false;
                     InputDisabled = true;
@@ -91,6 +81,9 @@ namespace Chaotx.Minesweeper {
             MainContainer.Clear();
             MainContainer.Add(vPane);
             MainContainer.Add(menu);
+
+            int w = Width/Map.Tiles.Length;
+            int h = Height/Map.Tiles[0].Length;
 
             for(int x = 0; x < Map.Tiles.Length; ++x) {
                 ListMenu vList = new ListMenu();
@@ -108,8 +101,11 @@ namespace Chaotx.Minesweeper {
 
                     item.Action += (s, a) => {
                         Point p = itemMap[item];
-                        if(Map.RevealTile(p.X, p.Y)) {
-                            // TODO GameOver
+                        Map.RevealTile(p.X, p.Y);
+
+                        if(IsGameOver()) {
+                            Manager.Add(CreateGameOverView());
+                            State = ViewState.Suspended;
                         }
                     };
 
@@ -122,6 +118,20 @@ namespace Chaotx.Minesweeper {
                     };
                 }
             }
+        }
+
+        public GameOverView CreateGameOverView() {
+            Highscore score = new Highscore("Unknown",
+                Map.RevealedMines, Map.TotalMines,
+                Map.ElapsedTime, Game.Settings);
+
+            return new GameOverView(this, score);
+        }
+
+        public bool IsGameOver() {
+            return Map.RevealedMines == Map.TotalMines
+                || Map.RevealedTiles == Map.TotalTiles
+                - (Map.TotalMines-Map.RevealedMines);
         }
 
         public override void Update(GameTime gameTime) {

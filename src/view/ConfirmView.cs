@@ -25,7 +25,7 @@ namespace Chaotx.Minesweeper {
             Init();
         }
 
-        public void Init() {
+        public override void Init() {
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
             background.Color = Color.Black;

@@ -13,5 +13,7 @@ namespace Chaotx.Minesweeper {
         public GameView(GameView parent) : base(parent.Content, parent.Graphics) {
             Parent = parent;
         }
+
+        public abstract void Init();
     }
 }

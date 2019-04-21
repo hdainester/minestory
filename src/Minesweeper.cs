@@ -17,6 +17,10 @@ namespace Chaotx.Minesweeper {
         public static readonly string SCORES_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "scores.dat";
         public static readonly string SETTINGS_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "settings.dat";
 
+        public static readonly int MAX_SCORES = 100;
+        public static readonly int MIN_NAME_LEN = 3;
+        public static readonly int MAX_NAME_LEN = 8;
+
         public GameSettings Settings {get; set;}
         public List<Highscore> Scores {get; set;}
 
@@ -31,12 +35,14 @@ namespace Chaotx.Minesweeper {
             viewControl = new ViewControl();
         }
 
-        public void AddHighscore(Highscore score) {
+        public int GetScoreIndex(Highscore score) {
+            int i = 0;
             Highscore current;
-            for(int i = 0; i < Scores.Count; ++i) {
+
+            for(; i < Scores.Count; ++i) {
                 current = Scores[i];
-                int diff1 = (((int)score.Settings.Difficulty)+1)%5;
-                int diff2 = (((int)current.Settings.Difficulty)+1)%5;
+                int diff1 = (((int)score.Settings.Difficulty)+1)%4;
+                int diff2 = (((int)current.Settings.Difficulty)+1)%4;
 
                 if(diff1 >= diff2) {
                     float mines1 = 0;
@@ -53,14 +59,12 @@ namespace Chaotx.Minesweeper {
                     }
 
                     if(mines1 < mines2 || mines1 == mines2
-                    && score.Time <= current.Time) {
-                        Scores.Insert(i, score);
-                        return;
-                    }
+                    && score.Time <= current.Time)
+                        return i;
                 }
             }
             
-            Scores.Add(score);
+            return i;
         }
 
         protected override void LoadContent() {

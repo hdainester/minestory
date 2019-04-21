@@ -21,7 +21,7 @@ namespace Chaotx.Minesweeper {
             Init();
         }
 
-        public void Init() {
+        public override void Init() {
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
             background.Color = Color.Gold;
@@ -80,8 +80,12 @@ namespace Chaotx.Minesweeper {
         public MapView CreateMapView() {
             int vw = (int)(Graphics.Viewport.Width*0.75f);
             int vh = (int)(Graphics.Viewport.Height*0.75f);
-            GameMap gameMap = new GameMap(MapDifficulty.Easy);
-            return new MapView(gameMap, vw, vh, Game);
+            GameMap gameMap = new GameMap(
+                Game.Settings.MapWidth,
+                Game.Settings.MapHeight,
+                Game.Settings.MineDensitiy);
+
+            return new MapView(this, gameMap, vw, vh, Game);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Chaotx.Minesweeper {
             Init();
         }
 
-        public void Init() {
+        public override void Init() {
             int i = 1;
             int p = Int32.MaxValue;
 
@@ -87,28 +87,10 @@ namespace Chaotx.Minesweeper {
             back.HAlign = HAlignment.Center;
             back.VAlign = VAlignment.Top;
 
-            left.Disabled += (s, a) => {
-                if(left.IsDisabled) {
-                    left.Image.Color = Color.Gray;
-                    left.Image.Alpha = 0.8f;
-                } else {
-                    left.Image.Color = Color.White;
-                    left.Image.Alpha = 1;
-                }
-            };
-
-            right.Disabled += (s, a) => {
-                if(right.IsDisabled) {
-                    right.Image.Color = Color.Gray;
-                    right.Image.Alpha = 0.8f;
-                } else {
-                    right.Image.Color = Color.White;
-                    right.Image.Alpha = 1;
-                }
-            };
-
             left.IsDisabled = true;
             if(pages.Count < 2) right.IsDisabled = true;
+            UpdateArrow(left);
+            UpdateArrow(right);
 
             stack = new StackPane(background);
             stack.HGrow = stack.VGrow = 1;
@@ -142,6 +124,8 @@ namespace Chaotx.Minesweeper {
 
                 right.IsDisabled = selectedPage >= pages.Count-1;
                 left.IsDisabled = selectedPage <= 0;
+                UpdateArrow(left);
+                UpdateArrow(right);
             };
 
             right.Action += (s, a) => {
@@ -151,9 +135,21 @@ namespace Chaotx.Minesweeper {
 
                 right.IsDisabled = selectedPage >= pages.Count-1;
                 left.IsDisabled = selectedPage <= 0;
+                UpdateArrow(left);
+                UpdateArrow(right);
             };
 
             back.Action += (s, a) => Close();
+        }
+
+        private void UpdateArrow(MenuItem arrow) {
+            if(arrow.IsDisabled) {
+                arrow.Image.Color = Color.Gray;
+                arrow.Image.Alpha = 0.8f;
+            } else {
+                arrow.Image.Color = Color.White;
+                arrow.Image.Alpha = 1;
+            }
         }
 
         private void SwapPage(VPane newPage) {

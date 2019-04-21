@@ -16,21 +16,13 @@ namespace Chaotx.Minesweeper {
         public int TotalTiles {get; private set;}
         public int RevealedMines {get; private set;}
         public int TotalMines {get; private set;}
+        public int Density {get; private set;}
         public int Width {get; private set;}
         public int Height {get; private set;}
 
-        public GameMap(MapDifficulty difficulty) {
-            switch(difficulty) {
-                case MapDifficulty.Easy:
-                    initMap(9, 9, 0.12f);
-                    break;
-                case MapDifficulty.Medium:
-                    initMap(16, 16, 0.16f);
-                    break;
-                case MapDifficulty.Hard:
-                    initMap(30, 16, 0.21f);
-                    break;
-            }
+        public GameMap(int width, int height, int d) {
+            Density = d;
+            initMap(width, height, 1f/d);
         }
 
         public void initMap(int w, int h, float d) {
