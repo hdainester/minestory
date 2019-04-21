@@ -55,10 +55,12 @@ namespace Chaotx.Minesweeper {
                     if(mines1 < mines2 || mines1 == mines2
                     && score.Time <= current.Time) {
                         Scores.Insert(i, score);
-                        break;
+                        return;
                     }
                 }
             }
+            
+            Scores.Add(score);
         }
 
         protected override void LoadContent() {

@@ -44,7 +44,7 @@ namespace Chaotx.Minesweeper {
             base.Update(gameTime);
             revealedText.Text = string.Format("Revealed Tiles: {0}/{1}", Map.RevealedTiles, Map.TotalTiles);
             minesText.Text = string.Format("Revealed Mines: {0}/{1}", Map.RevealedMines, Map.TotalMines);
-            timeText.Text = string.Format("Time: {0}", Map.ElapsedTime);
+            timeText.Text = string.Format("Time: {0}", Map.ElapsedTime.ToString(@"hh\:mm\:ss\.ff"));
         }
     }
 }

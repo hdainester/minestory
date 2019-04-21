@@ -28,14 +28,14 @@ namespace Chaotx.Minesweeper {
             background.Alpha = 0.5f;
 
             MenuItem start = new MenuItem("Start Game", font);
-            MenuItem settings = new MenuItem("Settings", font);
             MenuItem highscore = new MenuItem("Highscores", font);
+            MenuItem settings = new MenuItem("Settings", font);
             MenuItem quit = new MenuItem("Quit", font);
 
-            start.Text.LayoutWithTrueSize = true;
-            settings.Text.LayoutWithTrueSize = true;
-            highscore.Text.LayoutWithTrueSize = true;
-            quit.Text.LayoutWithTrueSize = true;
+            // start.Text.LayoutWithTrueSize = true;
+            // settings.Text.LayoutWithTrueSize = true;
+            // highscore.Text.LayoutWithTrueSize = true;
+            // quit.Text.LayoutWithTrueSize = true;
 
             start.FocusGain += (s, a) => start.Text.Color = Color.Yellow;
             settings.FocusGain += (s, a) => settings.Text.Color = Color.Yellow;
@@ -51,8 +51,8 @@ namespace Chaotx.Minesweeper {
             ListMenu menu = new ListMenu();
             menu.ItemsOrientation = Orientation.Vertical;
             menu.AddItem(start);
-            menu.AddItem(settings);
             menu.AddItem(highscore);
+            menu.AddItem(settings);
             menu.AddItem(quit);
 
             start.Action += (s, a) => {
@@ -81,7 +81,7 @@ namespace Chaotx.Minesweeper {
             int vw = (int)(Graphics.Viewport.Width*0.75f);
             int vh = (int)(Graphics.Viewport.Height*0.75f);
             GameMap gameMap = new GameMap(MapDifficulty.Easy);
-            return new MapView(gameMap, vw, vh, Content, Graphics);
+            return new MapView(gameMap, vw, vh, Game);
         }
     }
 }

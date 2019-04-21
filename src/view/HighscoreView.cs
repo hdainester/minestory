@@ -12,7 +12,7 @@ using Chaotx.Mgx.Layout;
 
 namespace Chaotx.Minesweeper {
     public class HighscoreView : GameView {
-        public int EntriesPerPage {get; set;} = 10;
+        public int EntriesPerPage {get; set;} = 3; // TODO test value (default 10)
 
         private Minesweeper game;
         private List<VPane> pages;
@@ -56,12 +56,12 @@ namespace Chaotx.Minesweeper {
                     p = 1;
                 }
 
-                TextItem index = new TextItem(font, i.ToString("{0:00}: "));
+                TextItem index = new TextItem(font, i.ToString("D3") + ": ");
                 TextItem diff = new TextItem(font, score.Settings.Difficulty.ToString());
                 TextItem name = new TextItem(font, score.Name);
-                TextItem time = new TextItem(font, score.Time.ToString(@"\mm\:ss\.ff"));
-                TextItem hits = new TextItem(font, score.MinesHit.ToString("{0:00}"));
-                TextItem total = new TextItem(font, score.TotalMines.ToString("/{0:00}"));
+                TextItem time = new TextItem(font, score.Time.ToString(@"hh\:mm\:ss\.ff"));
+                TextItem hits = new TextItem(font, score.MinesHit.ToString("D2"));
+                TextItem total = new TextItem(font, "/" + score.TotalMines.ToString("D2"));
                 index.HAlign = diff.HAlign = name.HAlign = time.HAlign = hits.HAlign = total.HAlign = HAlignment.Center;
 
                 HPane hIndex = new HPane(index);
@@ -72,7 +72,8 @@ namespace Chaotx.Minesweeper {
                 hDiff.HGrow = hName.HGrow = hTime.HGrow = hHits.HGrow = 2;
                 hIndex.HGrow = 1;
 
-                HPane hPane = new HPane(hDiff, hName, hTime, hHits);
+                HPane hPane = new HPane(hIndex, hDiff, hName, hTime, hHits);
+                hPane.VAlign = VAlignment.Center;
                 hPane.HGrow = 1;
                 page.Add(hPane);
                 ++p;
@@ -88,26 +89,26 @@ namespace Chaotx.Minesweeper {
 
             left.Disabled += (s, a) => {
                 if(left.IsDisabled) {
-                    left.Color = Color.Gray;
-                    left.Alpha = 0.8f;
+                    left.Image.Color = Color.Gray;
+                    left.Image.Alpha = 0.8f;
                 } else {
-                    left.Color = Color.White;
-                    left.Alpha = 1;
+                    left.Image.Color = Color.White;
+                    left.Image.Alpha = 1;
                 }
             };
 
             right.Disabled += (s, a) => {
                 if(right.IsDisabled) {
-                    right.Color = Color.Gray;
-                    right.Alpha = 0.8f;
+                    right.Image.Color = Color.Gray;
+                    right.Image.Alpha = 0.8f;
                 } else {
-                    right.Color = Color.White;
-                    right.Alpha = 1;
+                    right.Image.Color = Color.White;
+                    right.Image.Alpha = 1;
                 }
             };
 
             left.IsDisabled = true;
-            if(pages.Count == 0) right.IsDisabled = true;
+            if(pages.Count < 2) right.IsDisabled = true;
 
             stack = new StackPane(background);
             stack.HGrow = stack.VGrow = 1;

@@ -35,12 +35,8 @@ namespace Chaotx.Minesweeper {
             MenuItem yes = new MenuItem("Yes", font);
             MenuItem no = new MenuItem("No", font);
             MenuItem gap = new MenuItem("   ", font);
-            gap.IsDisabled = true;
-
             msg.HAlign = HAlignment.Center;
-            msg.LayoutWithTrueSize = true;
-            yes.Text.LayoutWithTrueSize = true;
-            no.Text.LayoutWithTrueSize = true;
+            gap.IsDisabled = true;
 
             // ListMenu menu = new ListMenu(yes, no); // TODO fix ctor
             ListMenu menu = new ListMenu();
@@ -64,10 +60,10 @@ namespace Chaotx.Minesweeper {
             sPane.HGrow = 1;
 
             yes.FocusGain += (s, a) => yes.Text.Color = Color.Yellow;
-            yes.FocusGain += (s, a) => yes.Text.Color = Color.White;
+            yes.FocusLoss += (s, a) => yes.Text.Color = Color.White;
 
             no.FocusGain += (s, a) => no.Text.Color = Color.Yellow;
-            no.FocusGain += (s, a) => no.Text.Color = Color.White;
+            no.FocusLoss += (s, a) => no.Text.Color = Color.White;
 
             yes.Action += (s, a) => {
                 YesAction();

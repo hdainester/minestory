@@ -24,25 +24,26 @@ namespace Chaotx.Minesweeper {
         private Texture2D[] revealedTextures;
         private Dictionary<MenuItem, Point> itemMap;
 
-        public MapView(GameMap map, ContentManager content, GraphicsDevice graphics)
-        : this(map, graphics.Viewport.Width, graphics.Viewport.Height, content, graphics) {}
+        private Minesweeper game;
 
-        public MapView(
-            GameMap map, int width, int height,
-            ContentManager content,
-            GraphicsDevice graphics) : base(content, graphics)
-        {
+        public MapView(GameMap map, Minesweeper game)
+        : this(map, game.GraphicsDevice.Viewport.Width,
+            game.GraphicsDevice.Viewport.Height, game) {}
+
+        public MapView(GameMap map, int width, int height, Minesweeper game)
+        : base(game.Content, game.GraphicsDevice) {
             Map = map;
             Width = width;
             Height = height;
-            hiddenTexture = content.Load<Texture2D>("textures/tile_hid_0");
+            this.game = game;
+            hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");
             revealedTextures = new Texture2D[10];
 
             _font = Content.Load<SpriteFont>("fonts/menu_font");
             _blank = Content.Load<Texture2D>("textures/blank");
 
             for(int i = 0; i < 10; ++i)
-                revealedTextures[i] = content.Load<Texture2D>("textures/tile_rev_"+ i);
+                revealedTextures[i] = Content.Load<Texture2D>("textures/tile_rev_"+ i);
 
             Init();
         }
@@ -69,7 +70,18 @@ namespace Chaotx.Minesweeper {
             menu.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Escape) {
                     ConfirmView confirmView = new ConfirmView(this, "Exit Running Game?");
-                    confirmView.YesAction = () => Close();
+                    confirmView.YesAction = () => {
+                        Close();
+
+                        // TODO temporary spot for testing
+                        Highscore score = new Highscore("Olaf",
+                            Map.RevealedMines, Map.TotalMines,
+                            Map.ElapsedTime, game.Settings);
+
+                        game.AddHighscore(score);
+                        FileManager.SaveHighscores(Minesweeper.SCORES_PATH, game.Scores);
+                    };
+
                     confirmView.NoAction = () => InputDisabled = false;
                     InputDisabled = true;
                     Manager.Add(confirmView);
