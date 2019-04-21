@@ -11,6 +11,8 @@ namespace Chaotx.Minesweeper {
         : base(content, graphics) {}
 
         public GameView(GameView parent) : base(parent.Content, parent.Graphics) {
+            FadeInTime = 500;
+            FadeOutTime = 750;
             Parent = parent;
         }
 

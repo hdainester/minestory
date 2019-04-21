@@ -22,7 +22,7 @@ namespace Chaotx.Minesweeper {
 
         public GameMap(int width, int height, int d) {
             Density = d;
-            initMap(width, height, 1f/d);
+            initMap(width, height, (d/100f-0.002715f)); // to match general rules
         }
 
         public void initMap(int w, int h, float d) {

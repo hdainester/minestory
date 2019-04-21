@@ -32,11 +32,6 @@ namespace Chaotx.Minesweeper {
             MenuItem settings = new MenuItem("Settings", font);
             MenuItem quit = new MenuItem("Quit", font);
 
-            // start.Text.LayoutWithTrueSize = true;
-            // settings.Text.LayoutWithTrueSize = true;
-            // highscore.Text.LayoutWithTrueSize = true;
-            // quit.Text.LayoutWithTrueSize = true;
-
             start.FocusGain += (s, a) => start.Text.Color = Color.Yellow;
             settings.FocusGain += (s, a) => settings.Text.Color = Color.Yellow;
             highscore.FocusGain += (s, a) => highscore.Text.Color = Color.Yellow;

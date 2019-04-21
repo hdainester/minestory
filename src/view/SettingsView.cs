@@ -251,9 +251,14 @@ namespace Chaotx.Minesweeper {
         }
 
         public GameSettings CreateGameSettings() {
-            return new GameSettings(
+            GameSettings settings = new GameSettings(
                 difficulty, width, height, density,
                 audioVolume, musicVolume, language);
+
+            if(game.Settings != null)
+                settings.LastScore = game.Settings.LastScore;
+                
+            return settings;
         }
 
         private void SetupDifficulty(MapDifficulty d) {
