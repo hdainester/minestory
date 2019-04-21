@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.Control.Menu;
@@ -113,8 +114,15 @@ namespace Chaotx.Minesweeper {
             TextField textField = new TextField(game.Window, font, blank);
             confirm.HAlign = message.HAlign = textField.HAlign =  HAlignment.Center;
             confirm.VAlign = message.VAlign = textField.VAlign =  VAlignment.Center;
+
             textField.TextAlignment = HAlignment.Center;
             textField.HGrow = 0.8f;
+
+            if(game.Settings.LastScore != null)
+                textField.Text = game.Settings.LastScore.Name;
+
+            confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
+            confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
 
             HPane hConfirm = new HPane(confirm);
             HPane hMessage = new HPane(message);
@@ -138,29 +146,36 @@ namespace Chaotx.Minesweeper {
 
             textField.TextInput += (s, a) => {
                 confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
+                confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
 
                 if(textField.Text.Length > Minesweeper.MAX_NAME_LEN)
-                    textField.Text.Remove(Minesweeper.MAX_NAME_LEN-1);
+                    textField.Text = textField.Text.Remove(Minesweeper.MAX_NAME_LEN);
+            };
+
+            textField.KeyReleased += (s, a) => {
+                if(a.Key == Keys.Enter)
+                    ConfirmHighscore(textField, sPane);
             };
 
             confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
             confirm.FocusLoss += (s, a) => confirm.Text.Color = Color.White;
-            confirm.Action += (s, a) => {
-                // score.Name = textField.Text; // TODO
-                if(scoreIndex >= game.Scores.Count)
-                    game.Scores.Add(score);
-                else game.Scores.Insert(scoreIndex, score);
-
-                FileManager.SaveHighscores(Minesweeper.SCORES_PATH, game.Scores);
-                mainPane.Remove(sPane);
-                mainPane.Add(CreateNavPane());
-            };
+            confirm.Action += (s, a) => ConfirmHighscore(textField, sPane);
 
             return sPane;
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+        private void ConfirmHighscore(TextField textField, StackPane sPane) {
+            score.Name = textField.Text;
+            if(scoreIndex >= game.Scores.Count)
+                game.Scores.Add(score);
+            else game.Scores.Insert(scoreIndex, score);
+
+            game.Settings.LastScore = score;
+            FileManager.SaveHighscores(Minesweeper.SCORES_PATH, game.Scores);
+            FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, game.Settings);
+
+            mainPane.Remove(sPane);
+            mainPane.Add(CreateNavPane());
         }
     }
 }
