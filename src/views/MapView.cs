@@ -25,7 +25,6 @@ namespace Chaotx.Minesweeper {
         private Texture2D[] revealedTextures;
         private Dictionary<MenuItem, Point> itemMap;
 
-        public Minesweeper Game {get;}
         private GameMap mapTemplate;
 
         public MapView(MainMenuView parent, GameMap map, Minesweeper game)
@@ -35,7 +34,6 @@ namespace Chaotx.Minesweeper {
         public MapView(MainMenuView parent, GameMap map, int width, int height, Minesweeper game)
         : base(parent) {
             mapTemplate = map;
-            Game = game;
             Width = width;
             Height = height;
             hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");

@@ -12,12 +12,10 @@ namespace Chaotx.Minesweeper {
         private SpriteFont font;
         private Texture2D blank;
         private ImageItem background;
-        public Minesweeper Game {get;}
 
-        public MainMenuView(Minesweeper game) : base(game.Content, game.GraphicsDevice) {
+        public MainMenuView(Minesweeper game) : base(game) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
-            Game = game;
             Init();
         }
 

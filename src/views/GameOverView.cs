@@ -10,7 +10,6 @@ using Chaotx.Mgx.Layout;
 namespace Chaotx.Minesweeper {
     public class GameOverView : GameView {
         private Highscore score;
-        private Minesweeper game;
 
         private SpriteFont font;
         private Texture2D blank;
@@ -21,7 +20,6 @@ namespace Chaotx.Minesweeper {
 
         public GameOverView(MapView parent, Highscore score) : base(parent) {
             this.score = score;
-            game = parent.Game;
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             background = new ImageItem(blank);
@@ -59,7 +57,7 @@ namespace Chaotx.Minesweeper {
             MainContainer.Add(mainPane);
 
             if(score.MinesHit < score.TotalMines
-            && (scoreIndex = game.GetScoreIndex(score)) < Minesweeper.MAX_SCORES)
+            && (scoreIndex = Game.GetScoreIndex(score)) < Minesweeper.MAX_SCORES)
                 mainPane.Add(CreateTextInputPane("New Highscore! Enter your Name:"));
             else mainPane.Add(CreateNavPane());
         }
@@ -111,15 +109,15 @@ namespace Chaotx.Minesweeper {
         private LayoutPane CreateTextInputPane(string msg) {
             MenuItem confirm = new MenuItem("Confirm", font);
             TextItem message = new TextItem(font, msg);
-            TextField textField = new TextField(game.Window, font, blank);
+            TextField textField = new TextField(Game.Window, font, blank);
             confirm.HAlign = message.HAlign = textField.HAlign =  HAlignment.Center;
             confirm.VAlign = message.VAlign = textField.VAlign =  VAlignment.Center;
 
             textField.TextAlignment = HAlignment.Center;
             textField.HGrow = 0.8f;
 
-            if(game.Settings.LastScore != null)
-                textField.Text = game.Settings.LastScore.Name;
+            if(Game.Settings.LastScore != null)
+                textField.Text = Game.Settings.LastScore.Name;
 
             confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
             confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
@@ -166,13 +164,13 @@ namespace Chaotx.Minesweeper {
 
         private void ConfirmHighscore(TextField textField, StackPane sPane) {
             score.Name = textField.Text;
-            if(scoreIndex >= game.Scores.Count)
-                game.Scores.Add(score);
-            else game.Scores.Insert(scoreIndex, score);
+            if(scoreIndex >= Game.Scores.Count)
+                Game.Scores.Add(score);
+            else Game.Scores.Insert(scoreIndex, score);
 
-            game.Settings.LastScore = score;
-            FileManager.SaveHighscores(Minesweeper.SCORES_PATH, game.Scores);
-            FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, game.Settings);
+            Game.Settings.LastScore = score;
+            FileManager.SaveHighscores(Minesweeper.SCORES_PATH, Game.Scores);
+            FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, Game.Settings);
 
             mainPane.Remove(sPane);
             mainPane.Add(CreateNavPane());

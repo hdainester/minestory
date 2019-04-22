@@ -28,7 +28,7 @@ namespace Chaotx.Minesweeper {
 
         private StackPane stack;
 
-        public HighscoreView(Minesweeper game) : base(game.Content, game.GraphicsDevice) {
+        public HighscoreView(Minesweeper game) : base(game) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
