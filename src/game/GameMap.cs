@@ -60,7 +60,7 @@ namespace Chaotx.Minesweeper {
                     Tiles[x][y].Revealed += (s, a) => {
                         MapTile t = (MapTile)s;
                         ++RevealedTiles;
-                        if(t.HasMine) ++RevealedMines; // TODO
+                        if(t.HasMine) ++RevealedMines;
                     };
                 }
             }

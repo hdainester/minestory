@@ -51,7 +51,7 @@ namespace Chaotx.Minesweeper {
             menu.AddItem(quit);
 
             start.Action += (s, a) => {
-                Manager.Add(CreateMapView());
+                Manager.Add(Game.CreateMapView(this));
                 Hide();
             };
 
@@ -70,17 +70,6 @@ namespace Chaotx.Minesweeper {
             MainContainer.Clear();
             MainContainer.Add(background);
             MainContainer.Add(menu);
-        }
-
-        public MapView CreateMapView() {
-            int vw = (int)(Graphics.Viewport.Width*0.75f);
-            int vh = (int)(Graphics.Viewport.Height*0.75f);
-            GameMap gameMap = new GameMap(
-                Game.Settings.MapWidth,
-                Game.Settings.MapHeight,
-                Game.Settings.MineDensitiy);
-
-            return new MapView(this, gameMap, vw, vh, Game);
         }
     }
 }

@@ -93,7 +93,7 @@ namespace Chaotx.Minesweeper {
             mainMenu.FocusLoss += (s, a) => mainMenu.Text.Color = Color.White;
 
             newGame.Action += (s, a) => {
-                Manager.Add(((MainMenuView)Parent.Parent).CreateMapView());
+                Manager.Add(Game.CreateMapView(Parent.Parent));
                 Parent.Close();
                 Close();
             };

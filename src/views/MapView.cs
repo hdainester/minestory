@@ -27,11 +27,11 @@ namespace Chaotx.Minesweeper {
 
         private GameMap mapTemplate;
 
-        public MapView(MainMenuView parent, GameMap map, Minesweeper game)
+        public MapView(GameView parent, GameMap map, Minesweeper game)
         : this(parent, map, game.GraphicsDevice.Viewport.Width,
             game.GraphicsDevice.Viewport.Height, game) {}
 
-        public MapView(MainMenuView parent, GameMap map, int width, int height, Minesweeper game)
+        public MapView(GameView parent, GameMap map, int width, int height, Minesweeper game)
         : base(parent) {
             mapTemplate = map;
             Width = width;
@@ -94,9 +94,12 @@ namespace Chaotx.Minesweeper {
             ListMenu menu = new ListMenu();
             menu.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Escape) {
-                    ConfirmView confirmView = new ConfirmView(this, "Exit Running Game?");
-                    confirmView.YesAction = () => Close();
-                    confirmView.NoAction = () => InputDisabled = false;
+                    ConfirmView confirmView = new ConfirmView(this,
+                        "Exit Running Game?",
+                        new ConfirmRespond("Yes", () => Close()),
+                        new ConfirmRespond("Restart", () => {Close(); Manager.Add(Game.CreateMapView(Parent));}),
+                        new ConfirmRespond("No", () => InputDisabled = false));
+                        
                     Manager.Add(confirmView, false);
                     InputDisabled = true;
                 }

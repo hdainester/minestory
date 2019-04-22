@@ -77,6 +77,17 @@ namespace Chaotx.Minesweeper {
             return i;
         }
 
+        public MapView CreateMapView(GameView parentView) {
+            int vw = (int)(GraphicsDevice.Viewport.Width*0.75f);
+            int vh = (int)(GraphicsDevice.Viewport.Height*0.75f);
+            GameMap gameMap = new GameMap(
+                Settings.MapWidth,
+                Settings.MapHeight,
+                Settings.MineDensitiy);
+
+            return new MapView(parentView, gameMap, vw, vh, this);
+        }
+
         protected override void LoadContent() {
             Directory.CreateDirectory(APP_DIRECTORY);
             Settings = FileManager.LoadSettings(SETTINGS_PATH);

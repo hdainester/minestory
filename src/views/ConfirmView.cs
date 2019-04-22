@@ -5,21 +5,35 @@ using Microsoft.Xna.Framework;
 using Chaotx.Mgx.Control.Menu;
 using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
+
+using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace Chaotx.Minesweeper {
-    public class ConfirmView : GameView {
-        public Action YesAction {get; set;}
-        public Action NoAction {get; set;}
+    public class ConfirmRespond {
+        public string Text {get;}
+        public Action Action {get;}
 
+        public ConfirmRespond(string text, Action action) {
+            Text = text;
+            Action = action;
+        }
+    }
+    
+    public class ConfirmView : GameView {
         private ImageItem background;
         private SpriteFont font;
         private Texture2D blank;
+
+        private List<ConfirmRespond> responds;
         private string message;
 
-        public ConfirmView(GameView parent, string message) : base(parent) {
+        public ConfirmView(GameView parent, string message,
+        params ConfirmRespond[] responds) : base(parent) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
+            this.responds = responds.ToList();
             this.message = message;
             Init();
         }
@@ -31,18 +45,10 @@ namespace Chaotx.Minesweeper {
             background.Alpha = 0.3f;
 
             TextItem msg = new TextItem(font, message);
-            MenuItem yes = new MenuItem("Yes", font);
-            MenuItem no = new MenuItem("No", font);
-            MenuItem gap = new MenuItem("   ", font);
             msg.HAlign = HAlignment.Center;
-            gap.IsDisabled = true;
 
-            // ListMenu menu = new ListMenu(yes, no); // TODO fix ctor
             ListMenu menu = new ListMenu();
             menu.VAlign = VAlignment.Center;
-            menu.AddItem(yes);
-            menu.AddItem(gap);
-            menu.AddItem(no);
 
             VPane vPane = new VPane(msg, menu);
             vPane.HAlign = HAlignment.Center;
@@ -58,21 +64,23 @@ namespace Chaotx.Minesweeper {
             sPane.VGrow = 0.2f;
             sPane.HGrow = 1;
 
-            yes.FocusGain += (s, a) => yes.Text.Color = Color.Yellow;
-            yes.FocusLoss += (s, a) => yes.Text.Color = Color.White;
+            responds.ForEach(respond => {
+                if(respond != responds[0]) {
+                    MenuItem gap = new MenuItem("   ", font);
+                    gap.IsDisabled = true;
+                    menu.AddItem(gap);
+                }
+                
+                MenuItem item = new MenuItem(respond.Text, font);
+                menu.AddItem(item);
 
-            no.FocusGain += (s, a) => no.Text.Color = Color.Yellow;
-            no.FocusLoss += (s, a) => no.Text.Color = Color.White;
-
-            yes.Action += (s, a) => {
-                YesAction();
-                Close();
-            };
-
-            no.Action += (s, a) => {
-                NoAction();
-                Close();
-            };
+                item.FocusGain += (s, a) => item.Text.Color = Color.Yellow;
+                item.FocusLoss += (s, a) => item.Text.Color = Color.White;
+                item.Action += (s, a) => {
+                    respond.Action();
+                    Close();
+                };
+            });
 
             MainContainer.Clear();
             MainContainer.Add(background);
