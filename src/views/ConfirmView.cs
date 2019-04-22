@@ -18,7 +18,6 @@ namespace Chaotx.Minesweeper {
         private string message;
 
         public ConfirmView(GameView parent, string message) : base(parent) {
-            FadeInTime = FadeOutTime = 500;
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             this.message = message;

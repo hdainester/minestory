@@ -35,7 +35,7 @@ namespace Chaotx.Minesweeper {
             arrRight = Content.Load<Texture2D>("textures/arrow_right");
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
-            background.Color = Color.Black;
+            background.Color = Color.CornflowerBlue;
             background.Alpha = 0.5f;
             this.game = game;
             Init();

@@ -35,6 +35,16 @@ namespace Chaotx.Minesweeper {
             viewControl = new ViewControl();
         }
 
+        public void ApplyWindowMode(WindowMode mode) {
+            if(mode == WindowMode.Fullscreen && !graphics.IsFullScreen) {
+                graphics.IsFullScreen = true;
+                graphics.ApplyChanges();
+            } else if(mode == WindowMode.Windowed && graphics.IsFullScreen) {
+                graphics.IsFullScreen = false;
+                graphics.ApplyChanges();
+            }
+        }
+
         public int GetScoreIndex(Highscore score) {
             int i = 0;
             Highscore current;
@@ -73,10 +83,10 @@ namespace Chaotx.Minesweeper {
             Scores = FileManager.LoadHighscores(SCORES_PATH);
             if(Settings == null) Settings = CreateDefaultSettings();
             if(Scores == null) Scores = new List<Highscore>();
-
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             viewControl.Add(menuView);
+            ApplyWindowMode(Settings.WindowMode);
         }
 
         protected override void Update(GameTime gameTime) {
@@ -86,7 +96,7 @@ namespace Chaotx.Minesweeper {
         }
 
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.SlateGray);
+            GraphicsDevice.Clear(Color.Black);
             viewControl.Draw(spriteBatch);
             base.Draw(gameTime);
         }

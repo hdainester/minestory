@@ -24,7 +24,7 @@ namespace Chaotx.Minesweeper {
         public override void Init() {
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
-            background.Color = Color.Gold;
+            background.Color = Color.CornflowerBlue;
             background.Alpha = 0.5f;
 
             MenuItem start = new MenuItem("Start Game", font);

@@ -4,47 +4,62 @@ using Microsoft.Xna.Framework;
 using Chaotx.Mgx.Layout;
 using Chaotx.Mgx.Control;
 
+using System.Linq;
+
 namespace Chaotx.Minesweeper {
     public class InfoPane : StackPane {
-        public GameMap Map {get;}
-
         private ImageItem background {get;}
+        private TextItem difficultyText;
         private TextItem revealedText;
         private TextItem minesText;
         private TextItem timeText;
         private SpriteFont font;
 
+        private Minesweeper game;
+        private GameMap map;
 
-        public InfoPane(GameMap map, SpriteFont font, Texture2D background) {
-            Map = map;
+        public InfoPane(GameMap map, Minesweeper game, SpriteFont font, Texture2D background) {
+            this.map = map;
+            this.game = game;
             this.font = font;
             this.background = new ImageItem(background);
-            this.background.Color = Color.Green;
-            this.background.Alpha = 0.35f;
-            init();
+            this.background.Color = Color.DarkGray;
+            this.background.Alpha = 0.5f;
+            Init();
         }
 
-        public void init() {
+        public void Init() {
             background.HGrow = background.VGrow = 1;
             revealedText = new TextItem(font);
             minesText = new TextItem(font);
             timeText = new TextItem(font);
-            VPane vPane = new VPane(revealedText, minesText, timeText);
+            difficultyText = new TextItem(font);
+
+            revealedText.Color = Color.Black;
+            minesText.Color = Color.Black;
+            timeText.Color = Color.Black;
+            difficultyText.Color = Color.Black;
+
+            revealedText.Alpha = 0.75f;
+            minesText.Alpha = 0.75f;
+            timeText.Alpha = 0.75f;
+            difficultyText.Alpha = 0.75f;
+
+            VPane vPane = new VPane(difficultyText, revealedText, minesText, timeText);
+            vPane.Children.ToList().ForEach(child => child.HAlign = HAlignment.Center);
+            vPane.HGrow = 1;
 
             Clear();
             Add(background);
             Add(vPane);
-
-            HGrow = 0.8f;
-            HAlign = HAlignment.Center;
-            // VGrow = 1;
         }
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
-            revealedText.Text = string.Format("Revealed Tiles: {0}/{1}", Map.RevealedTiles, Map.TotalTiles);
-            minesText.Text = string.Format("Revealed Mines: {0}/{1}", Map.RevealedMines, Map.TotalMines);
-            timeText.Text = string.Format("Time: {0}", Map.ElapsedTime.ToString(@"hh\:mm\:ss\.ff"));
+            difficultyText.Text = string.Format("Difficulty: {0}", game.Settings.Difficulty);
+            revealedText.Text = string.Format("Revealed Tiles: {0:000}/{1:000}", map.RevealedTiles, map.TotalTiles);
+            minesText.Text = string.Format("Revealed Mines: {0:00}/{1:00}", map.RevealedMines, map.TotalMines);
+            timeText.Text = string.Format("Time: {0}", map.ElapsedTime.ToString(@"hh\:mm\:ss\.ff"));
         }
     }
 }

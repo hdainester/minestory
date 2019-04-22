@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.Control.Menu;
+using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 using Chaotx.Mgx.View;
 
@@ -54,17 +55,37 @@ namespace Chaotx.Minesweeper {
             itemMap = new Dictionary<MenuItem, Point>();
             Map = new GameMap(mapTemplate.Width, mapTemplate.Height, mapTemplate.Density);
 
-            HPane hPane = new HPane();
-            hPane.HAlign = HAlignment.Center;
-            hPane.VAlign = VAlignment.Center;
-            hPane.HGrow = Width/(float)Graphics.Viewport.Width;
-            hPane.VGrow = Height/(float)Graphics.Viewport.Height;
+            HPane mapPane = new HPane();
+            mapPane.HAlign = HAlignment.Center;
+            mapPane.VAlign = VAlignment.Center;
+            mapPane.HGrow = Width/(float)Graphics.Viewport.Width;
+            mapPane.VGrow = Height/(float)Graphics.Viewport.Height;
 
-            StackPane sPane = new StackPane(hPane);
+            StackPane sPane = new StackPane(mapPane);
             sPane.HGrow = sPane.VGrow = 1;
 
-            VPane vPane = new VPane(new InfoPane(Map, _font, _blank), sPane);
+            ImageItem iBack = new ImageItem(_blank);
+            iBack.HGrow = iBack.VGrow = 1;
+            iBack.Color = Color.Black;
+            iBack.Alpha = 0.5f;
+
+            InfoPane iPane = new InfoPane(Map, Game, _font, _blank);
+            iPane.HAlign = HAlignment.Center;
+            iPane.HGrow = 0.5f;
+
+            StackPane iStack = new StackPane(iBack, iPane);
+            iStack.HGrow = 1;
+
+            VPane vPane = new VPane(iStack, sPane);
             vPane.HGrow = vPane.VGrow = 1;
+
+            ImageItem back = new ImageItem(_blank);
+            back.HGrow = back.VGrow = 1;
+            back.Color = Color.CornflowerBlue;
+            back.Alpha = 0.5f;
+
+            StackPane sBack = new StackPane(back, vPane);
+            sBack.HGrow = sBack.VGrow = 1;
 
             ListMenu menu = new ListMenu();
             menu.KeyReleased += (s, a) => {
@@ -78,10 +99,36 @@ namespace Chaotx.Minesweeper {
                 }
             };
 
+            InitMapPane(mapPane);
             MainContainer.Clear();
-            MainContainer.Add(vPane);
+            MainContainer.Add(sBack);
             MainContainer.Add(menu);
+        }
 
+        public GameOverView CreateGameOverView() {
+            Highscore score = new Highscore("Unknown",
+                Map.RevealedMines, Map.TotalMines,
+                Map.ElapsedTime, Game.Settings);
+
+            return new GameOverView(this, score);
+        }
+
+        public bool IsGameOver() {
+            return Map.RevealedMines == Map.TotalMines
+                || Map.RevealedTiles == Map.TotalTiles
+                - (Map.TotalMines-Map.RevealedMines);
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+
+            if(State == ViewState.Open) {
+                ElapsedTime += gameTime.ElapsedGameTime;
+                Map.ElapsedTime = ElapsedTime;
+            }
+        }
+
+        private void InitMapPane(HPane mapPane) {
             int w = Width/Map.Tiles.Length;
             int h = Height/Map.Tiles[0].Length;
 
@@ -89,7 +136,7 @@ namespace Chaotx.Minesweeper {
                 ListMenu vList = new ListMenu();
                 vList.ItemsOrientation = Mgx.Control.Orientation.Vertical;
                 vList.KeyBoardEnabled = false;
-                hPane.Add(vList);
+                mapPane.Add(vList);
 
                 for(int y = 0; y < Map.Tiles[0].Length; ++y) {
                     MenuItem item = new MenuItem(hiddenTexture, w, h);
@@ -117,29 +164,6 @@ namespace Chaotx.Minesweeper {
                             : revealedTextures[tile.GetMineCount()];
                     };
                 }
-            }
-        }
-
-        public GameOverView CreateGameOverView() {
-            Highscore score = new Highscore("Unknown",
-                Map.RevealedMines, Map.TotalMines,
-                Map.ElapsedTime, Game.Settings);
-
-            return new GameOverView(this, score);
-        }
-
-        public bool IsGameOver() {
-            return Map.RevealedMines == Map.TotalMines
-                || Map.RevealedTiles == Map.TotalTiles
-                - (Map.TotalMines-Map.RevealedMines);
-        }
-
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
-
-            if(State == ViewState.Open) {
-                ElapsedTime += gameTime.ElapsedGameTime;
-                Map.ElapsedTime = ElapsedTime;
             }
         }
     }
