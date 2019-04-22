@@ -92,7 +92,7 @@ namespace Chaotx.Minesweeper {
         }
 
         private GameSettings CreateDefaultSettings() {
-            return new GameSettings(MapDifficulty.Easy, 9, 9, 12, 70, 70, "en");
+            return new GameSettings(MapDifficulty.Easy, 9, 9, 12, 70, 70);
         }
     }
 }
