@@ -38,7 +38,6 @@ namespace Chaotx.Minesweeper {
             SongFadeOut = 3000;
             songFadeIn = int.MaxValue;
             songFadeOut = int.MaxValue;
-            volume = 1;
         }
 
         /// Adds a song to the manager.

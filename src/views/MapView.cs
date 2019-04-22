@@ -45,6 +45,12 @@ namespace Chaotx.Minesweeper {
             for(int i = 0; i < 10; ++i)
                 revealedTextures[i] = Content.Load<Texture2D>("textures/tile_rev_"+ i);
 
+            // TODO
+            // Media.AddSong("audio/songs/map_theme_0");
+            // Media.AddSong("audio/songs/map_theme_1");
+            Media.AddSound("audio/sounds/numb_revealed");
+            Media.AddSound("audio/sounds/mine_revealed");
+
             Init();
         }
 
@@ -90,10 +96,9 @@ namespace Chaotx.Minesweeper {
                 if(a.Key == Keys.Escape) {
                     ConfirmView confirmView = new ConfirmView(this, "Exit Running Game?");
                     confirmView.YesAction = () => Close();
-
                     confirmView.NoAction = () => InputDisabled = false;
+                    Manager.Add(confirmView, false);
                     InputDisabled = true;
-                    Manager.Add(confirmView);
                 }
             };
 
@@ -146,7 +151,10 @@ namespace Chaotx.Minesweeper {
 
                     item.Action += (s, a) => {
                         Point p = itemMap[item];
-                        Map.RevealTile(p.X, p.Y);
+
+                        if(Map.RevealTile(p.X, p.Y))
+                            Media.PlaySound(1);
+                        else Media.PlaySound(0);
 
                         if(IsGameOver()) {
                             Manager.Add(CreateGameOverView());

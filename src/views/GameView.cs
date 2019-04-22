@@ -28,6 +28,9 @@ namespace Chaotx.Minesweeper {
         public override void Show() {
             base.Show();
 
+            Media.SongVolume = Game.Settings.MusicVolume/100f;
+            Media.SoundVolume = Game.Settings.AudioVolume/100f;
+
             if(Media.Songs.Count > 0)
                 Media.PlaySong(0);
         }

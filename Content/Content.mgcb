@@ -25,6 +25,18 @@
 /processorParam:Quality=Best
 /build:audio/songs/menu_theme_1.mp3
 
+#begin audio/sounds/mine_revealed.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/sounds/mine_revealed.wav
+
+#begin audio/sounds/numb_revealed.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/sounds/numb_revealed.wav
+
 #begin fonts/menu_font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
