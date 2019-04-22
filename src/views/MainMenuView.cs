@@ -16,6 +16,8 @@ namespace Chaotx.Minesweeper {
         public MainMenuView(Minesweeper game) : base(game) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
+            Media.AddSong("audio/songs/menu_theme_0");
+            Media.AddSong("audio/songs/menu_theme_1");
             Init();
         }
 

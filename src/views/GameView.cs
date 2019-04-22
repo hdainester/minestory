@@ -1,5 +1,6 @@
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.View;
 
@@ -39,6 +40,11 @@ namespace Chaotx.Minesweeper {
         public override void Hide() {
             base.Hide();
             Media.StopSong();
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            Media.Update(gameTime);
         }
 
         public abstract void Init();
