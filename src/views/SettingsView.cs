@@ -13,6 +13,9 @@ using System;
 namespace Chaotx.Minesweeper {
     public class SettingsView : GameView {
         private class MenuEntry {
+            private static int entryCount;
+
+            public int ID {get;}
             public LayoutPane ValuePane {get;}
             public LayoutPane NamePane {get;}
             public TextItem ValueItem {get;}
@@ -43,10 +46,14 @@ namespace Chaotx.Minesweeper {
                 ValuePane = new HPane(ArrowLeft, ValueItem, ArrowRight);
 
                 Value = value;
-                ValuePane.HGrow = 1;
+                ValuePane.HGrow = 0.9f;
+                NamePane.HGrow = 0.9f;
+                NameItem.HAlign = HAlignment.Left;
+                NamePane.HAlign = HAlignment.Center;
                 ValueItem.HAlign = HAlignment.Center;
                 ArrowLeft.HAlign = HAlignment.Left;
                 ArrowRight.HAlign = HAlignment.Right;
+                ID = entryCount++;
             }
         }
 
@@ -56,7 +63,7 @@ namespace Chaotx.Minesweeper {
         private ImageItem background;
 
         private Minesweeper game;
-        private SortedDictionary<string, MenuEntry> entries;
+        private Dictionary<string, MenuEntry> entries;
         private Dictionary<string, string> values;
 
         public SettingsView(GameView parent, Minesweeper game) : base(parent) {
@@ -64,7 +71,7 @@ namespace Chaotx.Minesweeper {
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
             arrRight = Content.Load<Texture2D>("textures/arrow_right");
-            entries = new SortedDictionary<string, MenuEntry>();
+            entries = new Dictionary<string, MenuEntry>();
             entries.Add("difficulty", new MenuEntry("Difficulty: ", font, arrLeft, arrRight, game.Settings.Difficulty));
             entries.Add("width", new MenuEntry("Map Width: ", font, arrLeft, arrRight, game.Settings.MapWidth));
             entries.Add("height", new MenuEntry("Map Height: ", font, arrLeft, arrRight, game.Settings.MapHeight));
@@ -87,7 +94,7 @@ namespace Chaotx.Minesweeper {
             vpNames.HGrow = 1;
             vpValues.HGrow = 1;
 
-            entries.Values.ToList().ForEach(entry => {
+            entries.Values.OrderBy(e => e.ID).ToList().ForEach(entry => {
                 vpNames.Add(entry.NamePane);
                 vpValues.Add(entry.ValuePane);
             });
@@ -114,7 +121,7 @@ namespace Chaotx.Minesweeper {
 
             VPane vPane = new VPane(sPane, exitMenu);
             vPane.HAlign = HAlignment.Center;
-            vPane.HGrow = 0.5f;
+            vPane.HGrow = 0.65f;
             vPane.VGrow = 1;
 
             MainContainer.Add(vPane);
@@ -192,10 +199,17 @@ namespace Chaotx.Minesweeper {
 
             entries["windowMode"].ArrowLeft.Action += (s, a) => entries["windowMode"].Value = WindowMode.Windowed;
             entries["windowMode"].ArrowRight.Action += (s, a) => entries["windowMode"].Value = WindowMode.Fullscreen;
+
+            entries.Values.ToList().ForEach(entry => {
+                entry.ArrowLeft.FocusGain += (s, a) => entry.ArrowLeft.Image.Color = Color.Yellow;
+                entry.ArrowLeft.FocusLoss += (s, a) => entry.ArrowLeft.Image.Color = Color.White;
+                entry.ArrowRight.FocusGain += (s, a) => entry.ArrowRight.Image.Color = Color.Yellow;
+                entry.ArrowRight.FocusLoss += (s, a) => entry.ArrowRight.Image.Color = Color.White;
+            });
         }
 
         public GameSettings CreateGameSettings() {
-            GameSettings settings = new GameSettings(
+            return new GameSettings(
                 (MapDifficulty)entries["difficulty"].Value,
                 (int)entries["width"].Value,
                 (int)entries["height"].Value,
@@ -203,11 +217,6 @@ namespace Chaotx.Minesweeper {
                 (int)entries["audioVolume"].Value,
                 (int)entries["musicVolume"].Value,
                 (WindowMode)entries["windowMode"].Value);
-
-            if(game.Settings != null)
-                settings.LastScore = game.Settings.LastScore;
-                
-            return settings;
         }
 
         private void SetupDifficulty(MapDifficulty d) {

@@ -7,6 +7,8 @@ using Chaotx.Mgx.Control.Menu;
 using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 
+using System.Linq;
+
 namespace Chaotx.Minesweeper {
     public class GameOverView : GameView {
         private Highscore score;
@@ -39,25 +41,37 @@ namespace Chaotx.Minesweeper {
             HPane hGameOver = new HPane(gameOver);
             hGameOver.HGrow = hGameOver.VGrow = 1;
 
-            ImageItem bItem = new ImageItem(blank);
-            bItem.HGrow = bItem.VGrow = 1;
-            bItem.Color = Color.DarkGray;
-            bItem.Alpha = 0.5f;
+            ImageItem bTop = new ImageItem(blank);
+            bTop.HGrow = bTop.VGrow = 1;
+            bTop.Color = Color.DarkGray;
+            bTop.Alpha = 0.5f;
 
-            StackPane sPane = new StackPane(bItem, hGameOver);
-            sPane.VAlign = VAlignment.Center;
-            sPane.HAlign = HAlignment.Center;
-            sPane.HGrow = 0.5f;
-            sPane.VGrow = 1;
+            ImageItem bBot = new ImageItem(blank);
+            bBot.HGrow = bBot.VGrow = 1;
+            bBot.Color = Color.Black;
+            bBot.Alpha = 0.5f;
 
-            mainPane = new VPane(sPane);
-            mainPane.HGrow = mainPane.VGrow = 1;
+            StackPane sTop = new StackPane(bTop, hGameOver);
+            sTop.VAlign = VAlignment.Center;
+            sTop.HAlign = HAlignment.Center;
+            sTop.HGrow = 0.5f;
+            sTop.VGrow = 1;
+
+            mainPane = new StackPane(bBot);
+            mainPane.HAlign = HAlignment.Center;
+            mainPane.VAlign = VAlignment.Center;
+            mainPane.HGrow = 0.5f;
+            mainPane.VGrow = 1;
+
+            VPane vPane = new VPane(sTop, mainPane);
+            vPane.HGrow = vPane.VGrow = 1;
+
             MainContainer.Clear();
             MainContainer.Add(background);
-            MainContainer.Add(mainPane);
+            MainContainer.Add(vPane);
 
             if(score.MinesHit < score.TotalMines
-            && (scoreIndex = Game.GetScoreIndex(score)) < Minesweeper.MAX_SCORES)
+            && (scoreIndex = Game.GetScoreIndex(score)) >= 0)
                 mainPane.Add(CreateTextInputPane("New Highscore! Enter your Name:"));
             else mainPane.Add(CreateNavPane());
         }
@@ -73,18 +87,9 @@ namespace Chaotx.Minesweeper {
             hNewGame.HGrow = hMainMenu.HGrow = 1;
 
             HPane hPane = new HPane(hNewGame, hMainMenu);
+            hPane.HAlign = HAlignment.Center;
+            hPane.VAlign = VAlignment.Center;
             hPane.HGrow = hPane.VGrow = 1;
-
-            ImageItem bItem = new ImageItem(blank);
-            bItem.HGrow = bItem.VGrow = 1;
-            bItem.Color = Color.Black;
-            bItem.Alpha = 0.5f;
-
-            StackPane sPane = new StackPane(bItem, hPane);
-            sPane.HAlign = HAlignment.Center;
-            sPane.VAlign = VAlignment.Center;
-            sPane.HGrow = 0.5f;
-            sPane.VGrow = 1;
 
             newGame.FocusGain += (s, a) => newGame.Text.Color = Color.Yellow;
             newGame.FocusLoss += (s, a) => newGame.Text.Color = Color.White;
@@ -103,7 +108,7 @@ namespace Chaotx.Minesweeper {
                 Close();
             };
 
-            return sPane;
+            return hPane;
         }
 
         private LayoutPane CreateTextInputPane(string msg) {
@@ -115,9 +120,6 @@ namespace Chaotx.Minesweeper {
 
             textField.TextAlignment = HAlignment.Center;
             textField.HGrow = 0.8f;
-
-            if(Game.Settings.LastScore != null)
-                textField.Text = Game.Settings.LastScore.Name;
 
             confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
             confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
@@ -131,17 +133,6 @@ namespace Chaotx.Minesweeper {
             vPane.VAlign = VAlignment.Center;
             vPane.HGrow = vPane.VGrow = 1;
 
-            ImageItem bItem = new ImageItem(blank);
-            bItem.HGrow = bItem.VGrow = 1;
-            bItem.Color = Color.Black;
-            bItem.Alpha = 0.5f;
-
-            StackPane sPane = new StackPane(bItem, vPane);
-            sPane.HAlign = HAlignment.Center;
-            sPane.VAlign = VAlignment.Center;
-            sPane.HGrow = 0.5f;
-            sPane.VGrow = 1;
-
             textField.TextInput += (s, a) => {
                 confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
                 confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
@@ -152,27 +143,34 @@ namespace Chaotx.Minesweeper {
 
             textField.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Enter)
-                    ConfirmHighscore(textField, sPane);
+                    AddHighscore(textField, vPane);
             };
 
             confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
             confirm.FocusLoss += (s, a) => confirm.Text.Color = Color.White;
-            confirm.Action += (s, a) => ConfirmHighscore(textField, sPane);
+            confirm.Action += (s, a) => AddHighscore(textField, vPane);
 
-            return sPane;
+            return vPane;
         }
 
-        private void ConfirmHighscore(TextField textField, StackPane sPane) {
+        private void AddHighscore(TextField textField, LayoutPane pane) {
+            MapDifficulty diff = Game.Settings.Difficulty;
             score.Name = textField.Text;
-            if(scoreIndex >= Game.Scores.Count)
+
+            if(scoreIndex >= Game.Scores.Count())
                 Game.Scores.Add(score);
             else Game.Scores.Insert(scoreIndex, score);
 
-            Game.Settings.LastScore = score;
+            if(Game.Scores
+            .Where(s => s.Settings.Difficulty == diff)
+            .Count() > Minesweeper.MAX_SCORES_PER_DIFF)
+                Game.Scores.Remove(Game.Scores.FindLast(
+                    h => h.Settings.Difficulty == diff));
+
             FileManager.SaveHighscores(Minesweeper.SCORES_PATH, Game.Scores);
             FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, Game.Settings);
 
-            mainPane.Remove(sPane);
+            mainPane.Remove(pane);
             mainPane.Add(CreateNavPane());
         }
     }

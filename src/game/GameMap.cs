@@ -69,12 +69,6 @@ namespace Chaotx.Minesweeper {
         public bool RevealTile(int x, int y) {
             MapTile tile = Tiles[x][y];
             tile.Reveal();
-
-            if(tile.GetMineCount() == 0)
-                tile.GetNeighbours()
-                    .Where(t => t.GetMineCount() == 0)
-                    .ToList().ForEach(t => t.Reveal());
-
             return tile.HasMine;
         }
     }

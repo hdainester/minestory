@@ -14,10 +14,10 @@ namespace Chaotx.Minesweeper {
             + Path.DirectorySeparatorChar + "chaotx"
             + Path.DirectorySeparatorChar + "minesweeper";
 
-        public static readonly string SCORES_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "scores.dat";
-        public static readonly string SETTINGS_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "settings.dat";
+        public static readonly string SCORES_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "scores";
+        public static readonly string SETTINGS_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "settings";
 
-        public static readonly int MAX_SCORES = 100;
+        public static readonly int MAX_SCORES_PER_DIFF = 100;
         public static readonly int MIN_NAME_LEN = 3;
         public static readonly int MAX_NAME_LEN = 8;
 
@@ -46,11 +46,16 @@ namespace Chaotx.Minesweeper {
         }
 
         public int GetScoreIndex(Highscore score) {
-            int i = 0;
+            if(MAX_SCORES_PER_DIFF <= 0) return -1;
             Highscore current;
+            int i = 0, p = 0;
 
             for(; i < Scores.Count; ++i) {
                 current = Scores[i];
+
+                if(current.Settings.Difficulty == Settings.Difficulty)
+                    if(++p > MAX_SCORES_PER_DIFF) return -1;
+
                 int diff1 = (((int)score.Settings.Difficulty)+1)%4;
                 int diff2 = (((int)current.Settings.Difficulty)+1)%4;
 
@@ -71,6 +76,8 @@ namespace Chaotx.Minesweeper {
                     if(mines1 < mines2 || mines1 == mines2
                     && score.Time <= current.Time)
                         return i;
+                    else if(p == MAX_SCORES_PER_DIFF)
+                        return -1;
                 }
             }
             

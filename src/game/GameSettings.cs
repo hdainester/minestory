@@ -6,7 +6,6 @@ namespace Chaotx.Minesweeper {
     [Serializable]
     public class GameSettings {
         public WindowMode WindowMode {get; set;}
-        public Highscore LastScore {get; set;}
         public MapDifficulty Difficulty {get;}
         public int MineDensitiy {get;}
         public int MapWidth {get;}

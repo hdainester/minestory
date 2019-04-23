@@ -47,6 +47,10 @@ namespace Chaotx.Minesweeper {
             if(!IsHidden) return;
             IsHidden = false;
             OnRevealed();
+
+            if(GetMineCount() == 0) GetNeighbours()
+                .Where(t => t.GetMineCount() == 0)
+                .ToList().ForEach(t => t.Reveal());
         }
 
         protected virtual void OnRevealed(EventArgs args = null) {
