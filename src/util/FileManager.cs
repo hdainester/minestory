@@ -29,7 +29,7 @@ namespace Chaotx.Minesweeper {
                 formatter.Serialize(stream, obj);
                 stream.Close();
             } catch(Exception e) {
-                Console.WriteLine("saving failed: " + e.Message);
+                //Console.WriteLine("saving failed: " + e.Message);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Chaotx.Minesweeper {
                 stream.Close();
                 return obj;
             } catch(Exception e) {
-                Console.WriteLine("loading failed: " + e.Message);
+                //Console.WriteLine("loading failed: " + e.Message);
                 return null;
             }
         }

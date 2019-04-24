@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework;
 
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace Chaotx.Minesweeper {
     public enum RepeatMode {NoReapeat, RepeatCurrent, RepeatAll}
 
     public class MediaManager {
+        private static List<Song> runningSongs = new List<Song>();
+
         private List<Song> songs = new List<Song>();
         public ReadOnlyCollection<Song> Songs => songs.AsReadOnly();
 
@@ -19,25 +22,18 @@ namespace Chaotx.Minesweeper {
         public RepeatMode Reapeat {get; set;}
         public float SoundVolume {get; set;}
         public float SongVolume {get; set;}
-        public int SongFadeIn {get; set;}
-        public int SongFadeOut {get; set;}
-        public bool SongRunning {get; protected set;}
+        public bool SongRunning => MediaPlayer.State == MediaState.Playing;
 
         private Game game;
-        private int songFadeIn;
-        private int songFadeOut;
         private int activeSong;
-        private bool stopped;
-        private float volume;
+        private bool running;
 
+        /// Creates a new media manager
+        /// associated to the passed game
         public MediaManager(Game game) {
             this.game = game;
             SoundVolume = 1;
             SongVolume = 1;
-            SongFadeIn = 3000;
-            SongFadeOut = 3000;
-            songFadeIn = int.MaxValue;
-            songFadeOut = int.MaxValue;
         }
 
         /// Adds a song to the manager.
@@ -59,11 +55,10 @@ namespace Chaotx.Minesweeper {
             if(songIndex >= songs.Count || songIndex < 0)
                 throw new Exception("no song at index " + songIndex);
 
-            StopSong();
-            activeSong = songIndex;
-            songFadeIn = 0;
-            SongRunning = true;
-            stopped = false;
+            MediaPlayer.Volume = SongVolume;
+            MediaPlayer.Play(songs[activeSong = songIndex]);
+            runningSongs.Add(songs[activeSong]);
+            running = true;
         }
 
         /// Starts playing the song at the specified index
@@ -76,43 +71,36 @@ namespace Chaotx.Minesweeper {
 
         /// Stops currently running song
         public void StopSong() {
-            if(SongRunning) {
-                songFadeIn = int.MaxValue;
-                songFadeOut = 0;
-                stopped = true;
+            if(SongRunning && songs.Count > 0) {
+                runningSongs.Remove(songs[activeSong]);
+
+                if(!runningSongs.Any(s => s == MediaPlayer.Queue.ActiveSong))
+                    MediaPlayer.Stop();
+
+                running = false;
+            }
+        }
+
+        /// Toggle to the next song
+        public void NextSong() {
+            if(running)
+                runningSongs.Remove(songs[activeSong]);
+
+            if(songs.Count > 0) {
+                if(Reapeat == RepeatMode.RepeatAll)
+                    PlaySong((activeSong+1)%songs.Count);
+                else PlaySong(activeSong);
             }
         }
 
         /// Updates this media manager
         public void Update(GameTime gameTime) {
-            int ms = gameTime.ElapsedGameTime.Milliseconds;
-            MediaPlayer.Volume = volume;
-
-            if(songFadeOut < SongFadeOut) {
-                volume = SongVolume*Math.Max(0, 1f - (songFadeOut += ms)/(float)SongFadeOut);
-
-                if(songFadeOut >= SongFadeOut) {
-                    SongRunning = false;
+            if(running) {
+                if(MediaPlayer.State == MediaState.Stopped)
                     NextSong();
-                }
-            } else if(songFadeIn < SongFadeIn) {
-                if(songFadeIn == 0)
-                    MediaPlayer.Play(songs[activeSong]);
 
-                volume = SongVolume*Math.Min(1, (songFadeIn += ms)/(float)SongFadeIn);
-            } else if(MediaPlayer.State == MediaState.Stopped) {
-                SongRunning = false;
-                NextSong();
+                MediaPlayer.Volume = SongVolume;
             }
-        }
-
-        private void NextSong() {
-            if(songs.Count == 0) return;
-            if(stopped || Reapeat == RepeatMode.NoReapeat)
-                MediaPlayer.Stop();
-            else if(Reapeat == RepeatMode.RepeatAll)
-                PlaySong((activeSong+1)%songs.Count);
-            else PlaySong(activeSong);
         }
     }
 }

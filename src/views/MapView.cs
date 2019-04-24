@@ -45,12 +45,9 @@ namespace Chaotx.Minesweeper {
             for(int i = 0; i < 10; ++i)
                 revealedTextures[i] = Content.Load<Texture2D>("textures/tile_rev_"+ i);
 
-            // TODO
-            // Media.AddSong("audio/songs/map_theme_0");
-            // Media.AddSong("audio/songs/map_theme_1");
+            Media.AddSong("audio/songs/game_theme_0");
             Media.AddSound("audio/sounds/numb_revealed");
             Media.AddSound("audio/sounds/mine_revealed");
-
             Init();
         }
 

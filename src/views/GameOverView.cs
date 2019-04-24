@@ -167,8 +167,8 @@ namespace Chaotx.Minesweeper {
                 Game.Scores.Remove(Game.Scores.FindLast(
                     h => h.Settings.Difficulty == diff));
 
-            FileManager.SaveHighscores(Minesweeper.SCORES_PATH, Game.Scores);
-            FileManager.SaveSettings(Minesweeper.SETTINGS_PATH, Game.Settings);
+            FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
+            FileManager.SaveSettings(Game.SettingsPath, Game.Settings);
 
             mainPane.Remove(pane);
             mainPane.Add(CreateNavPane());

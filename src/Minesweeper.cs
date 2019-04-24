@@ -10,25 +10,23 @@ using Chaotx.Mgx.View;
 
 namespace Chaotx.Minesweeper {
     public class Minesweeper : Game {
-        public static readonly string APP_DIRECTORY = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-            + Path.DirectorySeparatorChar + "chaotx"
-            + Path.DirectorySeparatorChar + "minesweeper";
-
-        public static readonly string SCORES_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "scores";
-        public static readonly string SETTINGS_PATH = APP_DIRECTORY + Path.DirectorySeparatorChar + "settings";
-
         public static readonly int MAX_SCORES_PER_DIFF = 100;
         public static readonly int MIN_NAME_LEN = 3;
         public static readonly int MAX_NAME_LEN = 8;
 
-        public GameSettings Settings {get; set;}
+        public string AppDirectory {get;}
+        public string ScoresPath => AppDirectory + Path.DirectorySeparatorChar + "scores";
+        public string SettingsPath => AppDirectory + Path.DirectorySeparatorChar + "settings";
+
+        public GameSettings Settings {get; set;} 
         public List<Highscore> Scores {get; set;}
 
         private SpriteBatch spriteBatch;
         private ViewControl viewControl;
         GraphicsDeviceManager graphics;
 
-        public Minesweeper() {
+        public Minesweeper(string appDirectory) {
+            AppDirectory = appDirectory;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
@@ -96,9 +94,9 @@ namespace Chaotx.Minesweeper {
         }
 
         protected override void LoadContent() {
-            Directory.CreateDirectory(APP_DIRECTORY);
-            Settings = FileManager.LoadSettings(SETTINGS_PATH);
-            Scores = FileManager.LoadHighscores(SCORES_PATH);
+            Directory.CreateDirectory(AppDirectory);
+            Settings = FileManager.LoadSettings(SettingsPath);
+            Scores = FileManager.LoadHighscores(ScoresPath);
             if(Settings == null) Settings = CreateDefaultSettings();
             if(Scores == null) Scores = new List<Highscore>();
             MainMenuView menuView = new MainMenuView(this);
