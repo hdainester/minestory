@@ -152,6 +152,10 @@ namespace Chaotx.Minesweeper {
                     item.Action += (s, a) => {
                         Point p = itemMap[item];
 
+                        while(Map.RevealedTiles == 0
+                        && Map.Tiles[p.X][p.Y].HasMine)
+                            Map.ShuffleMines();
+
                         if(Map.RevealTile(p.X, p.Y))
                             Media.PlaySound(1);
                         else Media.PlaySound(0);

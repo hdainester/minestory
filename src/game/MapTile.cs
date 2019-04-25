@@ -7,7 +7,7 @@ namespace Chaotx.Minesweeper {
         public int X {get;}
         public int Y {get;}
         public GameMap Map {get;}
-        public bool HasMine {get;}
+        public bool HasMine {get; set;}
         public bool IsHidden {get; private set;} = true;
 
         public event EventHandler Revealed;
