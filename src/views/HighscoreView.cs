@@ -156,8 +156,9 @@ namespace Chaotx.Minesweeper {
             };
 
             rightPage.Action += (s, a) => {
-                int sel = (selMap[selectedDiff] = Math.Max(PageCount(selectedDiff)-1, selMap[selectedDiff]+1));
-                rightPage.IsDisabled = sel >= PageCount(selectedDiff)-1;
+                int pc = PageCount(selectedDiff);
+                int sel = (selMap[selectedDiff] = Math.Min(pc-1, selMap[selectedDiff]+1));
+                rightPage.IsDisabled = sel >= pc-1;
                 leftPage.IsDisabled = sel <= 0;
                 tabMap[selectedDiff].NextTab();
                 UpdateArrow(leftPage);
