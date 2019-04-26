@@ -18,7 +18,7 @@ namespace Chaotx.Minesweeper {
 
         public GameView(GameView parent, Minesweeper game) : base(game.Content, game.GraphicsDevice) {
             Media = new MediaManager(game);
-            Media.Reapeat = RepeatMode.RepeatAll;
+            Media.Repeat = RepeatMode.RepeatAll;
             FadeInTime = 800;
             FadeOutTime = 400;
             Parent = parent;
@@ -31,18 +31,21 @@ namespace Chaotx.Minesweeper {
             Media.SongVolume = Game.Settings.MusicVolume/100f;
             Media.SoundVolume = Game.Settings.AudioVolume/100f;
 
-            if(Media.Songs.Count > 0)
-                Media.PlaySong(0);
+            if(Media.Songs.Count > 0) {
+                if(!Media.IsRunning)
+                    Media.PlaySong(0);
+            }
         }
 
         public override void Close() {
             base.Close();
-            Media.StopSong();
+
+            if(Media.Songs.Count > 0 && Media.IsRunning)
+                Media.StopSong();
         }
 
         public override void Hide() {
             base.Hide();
-            Media.StopSong();
         }
 
         public override void Update(GameTime gameTime) {

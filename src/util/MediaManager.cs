@@ -11,7 +11,9 @@ namespace Chaotx.Minesweeper {
     public enum RepeatMode {NoReapeat, RepeatCurrent, RepeatAll}
 
     public class MediaManager {
-        private static List<Song> runningSongs = new List<Song>();
+        private static Dictionary<Song, int> runningSongs = new Dictionary<Song, int>();
+        private static Song runningSong;
+        private static int instances;
 
         private List<Song> songs = new List<Song>();
         public ReadOnlyCollection<Song> Songs => songs.AsReadOnly();
@@ -19,10 +21,10 @@ namespace Chaotx.Minesweeper {
         private List<SoundEffect> sounds = new List<SoundEffect>();
         public ReadOnlyCollection<SoundEffect> Sounds => sounds.AsReadOnly();
 
-        public RepeatMode Reapeat {get; set;}
+        public bool IsRunning => running;
+        public RepeatMode Repeat {get; set;}
         public float SoundVolume {get; set;}
         public float SongVolume {get; set;}
-        public bool SongRunning => MediaPlayer.State == MediaState.Playing;
 
         private Game game;
         private int activeSong;
@@ -54,10 +56,9 @@ namespace Chaotx.Minesweeper {
         public void PlaySong(int songIndex) {
             if(songIndex >= songs.Count || songIndex < 0)
                 throw new Exception("no song at index " + songIndex);
-
+                
             MediaPlayer.Volume = SongVolume;
             MediaPlayer.Play(songs[activeSong = songIndex]);
-            runningSongs.Add(songs[activeSong]);
             running = true;
         }
 
@@ -71,23 +72,14 @@ namespace Chaotx.Minesweeper {
 
         /// Stops currently running song
         public void StopSong() {
-            if(SongRunning && songs.Count > 0) {
-                runningSongs.Remove(songs[activeSong]);
-
-                if(!runningSongs.Any(s => s == MediaPlayer.Queue.ActiveSong))
-                    MediaPlayer.Stop();
-
-                running = false;
-            }
+            MediaPlayer.Stop();
+            running = false;
         }
 
-        /// Toggle to the next song
+        /// Toggles the next song
         public void NextSong() {
-            if(running)
-                runningSongs.Remove(songs[activeSong]);
-
             if(songs.Count > 0) {
-                if(Reapeat == RepeatMode.RepeatAll)
+                if(Repeat == RepeatMode.RepeatAll)
                     PlaySong((activeSong+1)%songs.Count);
                 else PlaySong(activeSong);
             }
@@ -95,8 +87,9 @@ namespace Chaotx.Minesweeper {
 
         /// Updates this media manager
         public void Update(GameTime gameTime) {
-            if(running) {
-                if(MediaPlayer.State == MediaState.Stopped)
+            if(IsRunning) {
+                if(MediaPlayer.State == MediaState.Stopped
+                && Repeat != RepeatMode.NoReapeat)
                     NextSong();
 
                 MediaPlayer.Volume = SongVolume;

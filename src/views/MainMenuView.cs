@@ -42,7 +42,7 @@ namespace Chaotx.Minesweeper {
             highscore.FocusLoss += (s, a) => highscore.Text.Color = Color.White;
             quit.FocusLoss += (s, a) => quit.Text.Color = Color.White;
 
-            // ListMenu menu = new ListMenu(start, settings, highscore, quit);
+            // ListMenu menu = new ListMenu(start, settings, highscore, quit); // TODO fix ctor
             ListMenu menu = new ListMenu();
             menu.ItemsOrientation = Orientation.Vertical;
             menu.AddItem(start);
@@ -61,7 +61,7 @@ namespace Chaotx.Minesweeper {
             };
 
             highscore.Action += (s, a) => {
-                Manager.Add(new HighscoreView(Game));
+                Manager.Add(new HighscoreView(this, Game));
                 Hide();
             };
 

@@ -79,8 +79,6 @@ namespace Chaotx.Minesweeper {
             entries.Add("audioVolume", new MenuEntry("Audio Volume: ", font, arrLeft, arrRight, game.Settings.AudioVolume));
             entries.Add("musicVolume", new MenuEntry("Music Volume: ", font, arrLeft, arrRight, game.Settings.MusicVolume));
             entries.Add("windowMode", new MenuEntry("Window Mode: ", font, arrLeft, arrRight, game.Settings.WindowMode));
-            Media.AddSong("audio/songs/menu_theme_0");
-            Media.AddSong("audio/songs/menu_theme_1");
             this.game = game;
             Init();
         }

@@ -22,13 +22,11 @@ namespace Chaotx.Minesweeper {
         private Dictionary<MapDifficulty, TabPane> tabMap;
         private Dictionary<MapDifficulty, int> selMap;
 
-        public HighscoreView(Minesweeper game) : base(game) {
+        public HighscoreView(GameView parent, Minesweeper game) : base(parent, game) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
             arrRight = Content.Load<Texture2D>("textures/arrow_right");
-            Media.AddSong("audio/songs/menu_theme_0");
-            Media.AddSong("audio/songs/menu_theme_1");
             this.game = game;
             Init();
         }
