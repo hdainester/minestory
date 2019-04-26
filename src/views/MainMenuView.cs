@@ -9,20 +9,20 @@ using Chaotx.Mgx.View;
 
 namespace Chaotx.Minesweeper {
     public class MainMenuView : GameView {
-        private SpriteFont font;
-        private Texture2D blank;
         private ImageItem background;
+        private Texture2D banner;
+        private SpriteFont font;
 
         public MainMenuView(Minesweeper game) : base(game) {
             font = Content.Load<SpriteFont>("fonts/menu_font");
-            blank = Content.Load<Texture2D>("textures/blank");
+            banner = Content.Load<Texture2D>("textures/banner");
             Media.AddSong("audio/songs/menu_theme_0");
             Media.AddSong("audio/songs/menu_theme_1");
             Init();
         }
 
         public override void Init() {
-            background = new ImageItem(blank);
+            background = new ImageItem(Content.Load<Texture2D>("textures/home_back"));
             background.HGrow = background.VGrow = 1;
             background.Color = Color.CornflowerBlue;
             background.Alpha = 0.5f;
@@ -45,10 +45,25 @@ namespace Chaotx.Minesweeper {
             // ListMenu menu = new ListMenu(start, settings, highscore, quit); // TODO fix ctor
             ListMenu menu = new ListMenu();
             menu.ItemsOrientation = Orientation.Vertical;
+            menu.HAlign = HAlignment.Center;
+            menu.VAlign = VAlignment.Center;
             menu.AddItem(start);
             menu.AddItem(highscore);
             menu.AddItem(settings);
             menu.AddItem(quit);
+
+            ImageItem bannerItem = new ImageItem(banner);
+            bannerItem.VAlign = VAlignment.Center;
+            bannerItem.HGrow = 1;
+
+            VPane vPane = new VPane(bannerItem, menu);
+            vPane.HAlign = HAlignment.Center;
+            vPane.HGrow = 0.8f;
+            vPane.VGrow = 1;
+
+            MainContainer.Clear();
+            MainContainer.Add(background);
+            MainContainer.Add(vPane);
 
             start.Action += (s, a) => {
                 Manager.Add(Game.CreateMapView(this));
@@ -66,10 +81,6 @@ namespace Chaotx.Minesweeper {
             };
 
             quit.Action += (s, a) => Close();
-
-            MainContainer.Clear();
-            MainContainer.Add(background);
-            MainContainer.Add(menu);
         }
     }
 }
