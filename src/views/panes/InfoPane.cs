@@ -6,7 +6,7 @@ using Chaotx.Mgx.Control;
 
 using System.Linq;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class InfoPane : StackPane {
         private ImageItem background {get;}
         private TextItem difficultyText;
@@ -15,10 +15,10 @@ namespace Chaotx.Minesweeper {
         private TextItem timeText;
         private SpriteFont font;
 
-        private Minesweeper game;
+        private Minestory game;
         private GameMap map;
 
-        public InfoPane(GameMap map, Minesweeper game, SpriteFont font, Texture2D background) {
+        public InfoPane(GameMap map, Minestory game, SpriteFont font, Texture2D background) {
             this.map = map;
             this.game = game;
             this.font = font;

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class MapView : GameView {
         public TimeSpan ElapsedTime {get; private set;}
         public GameMap Map {get; private set; }
@@ -27,11 +27,11 @@ namespace Chaotx.Minesweeper {
 
         private GameMap mapTemplate;
 
-        public MapView(GameView parent, GameMap map, Minesweeper game)
+        public MapView(GameView parent, GameMap map, Minestory game)
         : this(parent, map, game.GraphicsDevice.Viewport.Width,
             game.GraphicsDevice.Viewport.Height, game) {}
 
-        public MapView(GameView parent, GameMap map, int width, int height, Minesweeper game)
+        public MapView(GameView parent, GameMap map, int width, int height, Minestory game)
         : base(parent) {
             mapTemplate = map;
             Width = width;

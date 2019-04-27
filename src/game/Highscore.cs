@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     [Serializable]
     public class Highscore {
         public string Name {get; set;}

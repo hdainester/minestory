@@ -4,20 +4,20 @@ using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.View;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public abstract class GameView : FadingView {
         public MediaManager Media {get;}
         public GameView Parent {get;}
-        public Minesweeper Game {get;}
+        public Minestory Game {get;}
         public Texture2D Background {get; protected set;}
 
         public GameView(GameView parent)
         : this(parent, parent.Game) {}
 
-        public GameView(Minesweeper game)
+        public GameView(Minestory game)
         : this(null, game) {}
 
-        public GameView(GameView parent, Minesweeper game) : base(game.Content, game.GraphicsDevice) {
+        public GameView(GameView parent, Minestory game) : base(game.Content, game.GraphicsDevice) {
             Media = new MediaManager(game);
             Media.Repeat = RepeatMode.RepeatAll;
             FadeInTime = 800;

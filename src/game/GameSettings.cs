@@ -1,6 +1,6 @@
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public enum WindowMode {Windowed, Fullscreen}
 
     [Serializable]

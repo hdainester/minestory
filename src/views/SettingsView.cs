@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class SettingsView : GameView {
         private class MenuEntry {
             private static int entryCount;
@@ -61,11 +61,11 @@ namespace Chaotx.Minesweeper {
         private Texture2D arrRight, arrLeft, blank;
         private ImageItem backItem;
 
-        private Minesweeper game;
+        private Minestory game;
         private Dictionary<string, MenuEntry> entries;
         private Dictionary<string, string> values;
 
-        public SettingsView(GameView parent, Minesweeper game) : base(parent) {
+        public SettingsView(GameView parent, Minestory game) : base(parent) {
             this.game = game;
             Init();
         }

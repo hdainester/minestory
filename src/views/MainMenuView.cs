@@ -7,13 +7,13 @@ using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 using Chaotx.Mgx.View;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class MainMenuView : GameView {
         private ImageItem backItem;
         private Texture2D banner;
         private SpriteFont font;
 
-        public MainMenuView(Minesweeper game) : base(game) {
+        public MainMenuView(Minestory game) : base(game) {
             Media.AddSong("audio/songs/menu_theme_0");
             // Media.AddSong("audio/songs/menu_theme_1");
             Init();

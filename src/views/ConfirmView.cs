@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class ConfirmRespond {
         public string Text {get;}
         public Action Action {get;}

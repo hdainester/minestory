@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class MapTile {
         public int X {get;}
         public int Y {get;}

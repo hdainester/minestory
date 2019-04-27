@@ -10,11 +10,11 @@ using Chaotx.Mgx.Control.Menu;
 using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class HighscoreView : GameView {
         public int EntriesPerPage {get; set;} = 10;
 
-        private Minesweeper game;
+        private Minestory game;
         private SpriteFont font;
         private Texture2D blank;
         private Texture2D arrLeft;
@@ -22,7 +22,7 @@ namespace Chaotx.Minesweeper {
         private Dictionary<MapDifficulty, TabPane> tabMap;
         private Dictionary<MapDifficulty, int> selMap;
 
-        public HighscoreView(GameView parent, Minesweeper game) : base(parent, game) {
+        public HighscoreView(GameView parent, Minestory game) : base(parent, game) {
             this.game = game;
             Init();
         }

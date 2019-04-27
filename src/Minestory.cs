@@ -8,8 +8,8 @@ using System;
 
 using Chaotx.Mgx.View;
 
-namespace Chaotx.Minesweeper {
-    public class Minesweeper : Game {
+namespace Chaotx.Minestory {
+    public class Minestory : Game {
         public static readonly int MAX_SCORES_PER_DIFF = 100;
         public static readonly int MIN_NAME_LEN = 3;
         public static readonly int MAX_NAME_LEN = 8;
@@ -25,7 +25,7 @@ namespace Chaotx.Minesweeper {
         private ViewControl viewControl;
         GraphicsDeviceManager graphics;
 
-        public Minesweeper(string appDirectory) {
+        public Minestory(string appDirectory) {
             AppDirectory = appDirectory;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;

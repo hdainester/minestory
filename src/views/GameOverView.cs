@@ -9,7 +9,7 @@ using Chaotx.Mgx.Layout;
 
 using System.Linq;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public class GameOverView : GameView {
         private Highscore score;
 
@@ -121,7 +121,7 @@ namespace Chaotx.Minesweeper {
             textField.TextAlignment = HAlignment.Center;
             textField.HGrow = 0.8f;
 
-            confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
+            confirm.IsDisabled = textField.Text.Length < Minestory.MIN_NAME_LEN;
             confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
 
             HPane hConfirm = new HPane(confirm);
@@ -134,11 +134,11 @@ namespace Chaotx.Minesweeper {
             vPane.HGrow = vPane.VGrow = 1;
 
             textField.TextInput += (s, a) => {
-                confirm.IsDisabled = textField.Text.Length < Minesweeper.MIN_NAME_LEN;
+                confirm.IsDisabled = textField.Text.Length < Minestory.MIN_NAME_LEN;
                 confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
 
-                if(textField.Text.Length > Minesweeper.MAX_NAME_LEN)
-                    textField.Text = textField.Text.Remove(Minesweeper.MAX_NAME_LEN);
+                if(textField.Text.Length > Minestory.MAX_NAME_LEN)
+                    textField.Text = textField.Text.Remove(Minestory.MAX_NAME_LEN);
             };
 
             textField.KeyReleased += (s, a) => {
@@ -163,7 +163,7 @@ namespace Chaotx.Minesweeper {
 
             if(Game.Scores
             .Where(s => s.Settings.Difficulty == diff)
-            .Count() > Minesweeper.MAX_SCORES_PER_DIFF)
+            .Count() > Minestory.MAX_SCORES_PER_DIFF)
                 Game.Scores.Remove(Game.Scores.FindLast(
                     h => h.Settings.Difficulty == diff));
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Chaotx.Minesweeper {
+namespace Chaotx.Minestory {
     public enum RepeatMode {NoReapeat, RepeatCurrent, RepeatAll}
 
     public class MediaManager {
