@@ -9,6 +9,7 @@ namespace Chaotx.Minesweeper {
         public MediaManager Media {get;}
         public GameView Parent {get;}
         public Minesweeper Game {get;}
+        public Texture2D Background {get; protected set;}
 
         public GameView(GameView parent)
         : this(parent, parent.Game) {}

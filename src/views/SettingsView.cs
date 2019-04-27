@@ -58,19 +58,24 @@ namespace Chaotx.Minesweeper {
         }
 
         private SpriteFont font;
-        private Texture2D blank;
-        private Texture2D arrRight, arrLeft;
-        private ImageItem background;
+        private Texture2D arrRight, arrLeft, blank;
+        private ImageItem backItem;
 
         private Minesweeper game;
         private Dictionary<string, MenuEntry> entries;
         private Dictionary<string, string> values;
 
         public SettingsView(GameView parent, Minesweeper game) : base(parent) {
+            this.game = game;
+            Init();
+        }
+
+        public override void Init() {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
             arrRight = Content.Load<Texture2D>("textures/arrow_right");
+
             entries = new Dictionary<string, MenuEntry>();
             entries.Add("difficulty", new MenuEntry("Difficulty: ", font, arrLeft, arrRight, game.Settings.Difficulty));
             entries.Add("width", new MenuEntry("Map Width: ", font, arrLeft, arrRight, game.Settings.MapWidth));
@@ -79,15 +84,9 @@ namespace Chaotx.Minesweeper {
             entries.Add("audioVolume", new MenuEntry("Audio Volume: ", font, arrLeft, arrRight, game.Settings.AudioVolume));
             entries.Add("musicVolume", new MenuEntry("Music Volume: ", font, arrLeft, arrRight, game.Settings.MusicVolume));
             entries.Add("windowMode", new MenuEntry("Window Mode: ", font, arrLeft, arrRight, game.Settings.WindowMode));
-            this.game = game;
-            Init();
-        }
 
-        public override void Init() {
-            background = new ImageItem(blank);
-            background.HGrow = background.VGrow = 1;
-            background.Color = Color.CornflowerBlue;
-            background.Alpha = 0.5f;
+            backItem = new ImageItem(Parent.Background);
+            backItem.HGrow = backItem.VGrow = 1;
 
             VPane vpNames = new VPane();
             VPane vpValues = new VPane();
@@ -115,7 +114,12 @@ namespace Chaotx.Minesweeper {
             hPane.VAlign = VAlignment.Center;
             hPane.HGrow = 1;
 
-            StackPane sPane = new StackPane(background, hPane);
+            ImageItem oBack = new ImageItem(blank);
+            oBack.HGrow = oBack.VGrow = 1;
+            oBack.Color = Color.Black;
+            oBack.Alpha = 0.42f;
+
+            StackPane sPane = new StackPane(oBack, hPane);
             sPane.VAlign = VAlignment.Center;
             sPane.HGrow = sPane.VGrow = 1;
 
@@ -124,7 +128,10 @@ namespace Chaotx.Minesweeper {
             vPane.HGrow = 0.65f;
             vPane.VGrow = 1;
 
-            MainContainer.Add(vPane);
+            StackPane sMain = new StackPane(backItem, vPane);
+            sMain.HGrow = sMain.VGrow = 1;
+
+            MainContainer.Add(sMain);
 
             accept.FocusGain += (s, a) => accept.Text.Color = Color.Yellow;
             accept.FocusLoss += (s, a) => accept.Text.Color = Color.White;

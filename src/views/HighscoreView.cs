@@ -23,17 +23,18 @@ namespace Chaotx.Minesweeper {
         private Dictionary<MapDifficulty, int> selMap;
 
         public HighscoreView(GameView parent, Minesweeper game) : base(parent, game) {
-            font = Content.Load<SpriteFont>("fonts/menu_font");
-            blank = Content.Load<Texture2D>("textures/blank");
-            arrLeft = Content.Load<Texture2D>("textures/arrow_left");
-            arrRight = Content.Load<Texture2D>("textures/arrow_right");
             this.game = game;
             Init();
         }
 
         public override void Init() {
+            arrRight = Content.Load<Texture2D>("textures/arrow_right");
+            arrLeft = Content.Load<Texture2D>("textures/arrow_left");
+            font = Content.Load<SpriteFont>("fonts/menu_font");
+            blank = Content.Load<Texture2D>("textures/blank");
             tabMap = new Dictionary<MapDifficulty, TabPane>();
             selMap = new Dictionary<MapDifficulty, int>();
+            
             MenuItem leftDiff = new MenuItem(arrLeft, 32, 32);
             MenuItem rightDiff = new MenuItem(arrRight, 32, 32);
             MenuItem leftPage = new MenuItem(arrLeft, 32, 32);
@@ -69,12 +70,12 @@ namespace Chaotx.Minesweeper {
                 tabMap[MapDifficulty.Hard],
                 tabMap[MapDifficulty.Custom]);
 
-            ImageItem background = new ImageItem(blank);
-            background.HGrow = background.VGrow = 1;
-            background.Color = Color.CornflowerBlue;
-            background.Alpha = 0.5f;
+            ImageItem tBack = new ImageItem(blank);
+            tBack.HGrow = tBack.VGrow = 1;
+            tBack.Color = Color.Black;
+            tBack.Alpha = 0.42f;
 
-            StackPane sPane = new StackPane(background, tPane);
+            StackPane sPane = new StackPane(tBack, tPane);
             sPane.HAlign = HAlignment.Center;
             sPane.HGrow = sPane.VGrow = 1;
             tPane.HGrow = tPane.VGrow = 1;
@@ -85,6 +86,13 @@ namespace Chaotx.Minesweeper {
 
             VPane vPane = new VPane(hDiffArr, hPane, back);
             vPane.HGrow = vPane.VGrow = 1;
+
+            ImageItem backItem = new ImageItem(Parent.Background);
+            backItem.HGrow = backItem.VGrow = 1;
+
+            MainContainer.Clear();
+            MainContainer.Add(backItem);
+            MainContainer.Add(vPane);
 
             leftDiff.FocusGain += (s, a) => leftDiff.Image.Color = Color.Yellow;
             leftDiff.FocusLoss += (s, a) => leftDiff.Image.Color = Color.White;
@@ -166,9 +174,6 @@ namespace Chaotx.Minesweeper {
             back.FocusGain += (s, a) => back.Text.Color = Color.Yellow;
             back.FocusLoss += (s, a) => back.Text.Color = Color.White;
             back.Action += (s, a) => Close();
-
-            MainContainer.Clear();
-            MainContainer.Add(vPane);
         }
 
         private TabPane CreateScoresPane(List<Highscore> scores) {
@@ -219,7 +224,7 @@ namespace Chaotx.Minesweeper {
             if(arrow.IsDisabled) {
                 arrow.Image.Color = Color.Gray;
                 arrow.Image.Alpha = 0.8f;
-            } else {
+            } else if(!arrow.IsFocused) {
                 arrow.Image.Color = Color.White;
                 arrow.Image.Alpha = 1;
             }

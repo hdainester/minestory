@@ -19,8 +19,8 @@ namespace Chaotx.Minesweeper {
         public int Width {get;}
         public int Height {get;}
 
-        private SpriteFont _font;
-        private Texture2D _blank;
+        private SpriteFont font;
+        private Texture2D blank;
         private Texture2D hiddenTexture;
         private Texture2D[] revealedTextures;
         private Dictionary<MenuItem, Point> itemMap;
@@ -36,15 +36,6 @@ namespace Chaotx.Minesweeper {
             mapTemplate = map;
             Width = width;
             Height = height;
-            hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");
-            revealedTextures = new Texture2D[10];
-
-            _font = Content.Load<SpriteFont>("fonts/menu_font");
-            _blank = Content.Load<Texture2D>("textures/blank");
-
-            for(int i = 0; i < 10; ++i)
-                revealedTextures[i] = Content.Load<Texture2D>("textures/tile_rev_"+ i);
-
             Media.AddSong("audio/songs/game_theme_0");
             Media.AddSound("audio/sounds/numb_revealed");
             Media.AddSound("audio/sounds/mine_revealed");
@@ -52,6 +43,14 @@ namespace Chaotx.Minesweeper {
         }
 
         public override void Init() {
+            revealedTextures = new Texture2D[10];
+            hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");
+            font = Content.Load<SpriteFont>("fonts/menu_font");
+            blank = Content.Load<Texture2D>("textures/blank");
+
+            for(int i = 0; i < 10; ++i)
+                revealedTextures[i] = Content.Load<Texture2D>("textures/tile_rev_"+ i);
+
             ElapsedTime = new TimeSpan();
             itemMap = new Dictionary<MenuItem, Point>();
             Map = new GameMap(mapTemplate.Width, mapTemplate.Height, mapTemplate.Density);
@@ -65,14 +64,14 @@ namespace Chaotx.Minesweeper {
             StackPane sPane = new StackPane(mapPane);
             sPane.HGrow = sPane.VGrow = 1;
 
-            ImageItem iBack = new ImageItem(_blank);
-            iBack.HGrow = iBack.VGrow = 1;
-            iBack.Color = Color.Black;
-            iBack.Alpha = 0.5f;
-
-            InfoPane iPane = new InfoPane(Map, Game, _font, _blank);
+            InfoPane iPane = new InfoPane(Map, Game, font, blank);
             iPane.HAlign = HAlignment.Center;
             iPane.HGrow = 0.5f;
+
+            ImageItem iBack = new ImageItem(blank);
+            iBack.HGrow = iBack.VGrow = 1;
+            iBack.Color = Color.Black;
+            iBack.Alpha = 0.42f;
 
             StackPane iStack = new StackPane(iBack, iPane);
             iStack.HGrow = 1;
@@ -80,12 +79,10 @@ namespace Chaotx.Minesweeper {
             VPane vPane = new VPane(iStack, sPane);
             vPane.HGrow = vPane.VGrow = 1;
 
-            ImageItem back = new ImageItem(_blank);
-            back.HGrow = back.VGrow = 1;
-            back.Color = Color.CornflowerBlue;
-            back.Alpha = 0.5f;
+            ImageItem backItem = new ImageItem(Parent.Background);
+            backItem.HGrow = backItem.VGrow = 1;
 
-            StackPane sBack = new StackPane(back, vPane);
+            StackPane sBack = new StackPane(backItem, vPane);
             sBack.HGrow = sBack.VGrow = 1;
 
             ListMenu menu = new ListMenu();

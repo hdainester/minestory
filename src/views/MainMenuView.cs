@@ -9,23 +9,22 @@ using Chaotx.Mgx.View;
 
 namespace Chaotx.Minesweeper {
     public class MainMenuView : GameView {
-        private ImageItem background;
+        private ImageItem backItem;
         private Texture2D banner;
         private SpriteFont font;
 
         public MainMenuView(Minesweeper game) : base(game) {
-            font = Content.Load<SpriteFont>("fonts/menu_font");
-            banner = Content.Load<Texture2D>("textures/banner");
             Media.AddSong("audio/songs/menu_theme_0");
-            Media.AddSong("audio/songs/menu_theme_1");
+            // Media.AddSong("audio/songs/menu_theme_1");
             Init();
         }
 
         public override void Init() {
-            background = new ImageItem(Content.Load<Texture2D>("textures/home_back"));
-            background.HGrow = background.VGrow = 1;
-            background.Color = Color.CornflowerBlue;
-            background.Alpha = 0.5f;
+            Background = Content.Load<Texture2D>("textures/home_back");
+            banner = Content.Load<Texture2D>("textures/banner");
+            font = Content.Load<SpriteFont>("fonts/menu_font");
+            backItem = new ImageItem(Background);
+            backItem.HGrow = backItem.VGrow = 1;
 
             MenuItem start = new MenuItem("Start Game", font);
             MenuItem highscore = new MenuItem("Highscores", font);
@@ -62,7 +61,7 @@ namespace Chaotx.Minesweeper {
             vPane.VGrow = 1;
 
             MainContainer.Clear();
-            MainContainer.Add(background);
+            MainContainer.Add(backItem);
             MainContainer.Add(vPane);
 
             start.Action += (s, a) => {
