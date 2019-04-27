@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include = "/Users/Hans/Documents/workspace/vscode/monogame/libs/mgx/mgx.csproj" />
+    <ProjectReference Include = "../libs/mgx/mgx.csproj" />
   </ItemGroup>
 
 </Project>

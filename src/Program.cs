@@ -8,7 +8,7 @@ namespace Chaotx.Minestory {
             using (var game = new Minestory(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
                     + Path.DirectorySeparatorChar + "chaotx"
-                    + Path.DirectorySeparatorChar + "minesweeper"))
+                    + Path.DirectorySeparatorChar + "minestory"))
                         game.Run();
         }
     }
