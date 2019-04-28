@@ -8,6 +8,7 @@ using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chaotx.Minestory {
     public class GameOverView : GameView {
@@ -70,12 +71,16 @@ namespace Chaotx.Minestory {
             MainContainer.Add(background);
             MainContainer.Add(vPane);
 
-            int pos = Game.AddHighscore(score);
-            if(score.MinesHit < score.TotalMines
-            && pos <= Minestory.MAX_SCORES_PER_DIFF)
-                mainPane.Add(CreateTextInputPane(
-                    "New Highscore! Rank " + pos + ". Enter your Name:"));
-            else mainPane.Add(CreateNavPane());
+            Task.Run(() => {
+                Game.Scores = FileManager.LoadHighscores(Game.ScoresPath);
+                int pos = Game.AddHighscore(score);
+
+                if(score.MinesHit < score.TotalMines
+                && pos <= Minestory.MAX_SCORES_PER_DIFF)
+                    mainPane.Add(CreateTextInputPane(
+                        "New Highscore! Rank " + pos + ". Enter your Name:"));
+                else mainPane.Add(CreateNavPane());
+            });
         }
 
         private LayoutPane CreateNavPane() {
