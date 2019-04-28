@@ -70,9 +70,11 @@ namespace Chaotx.Minestory {
             MainContainer.Add(background);
             MainContainer.Add(vPane);
 
+            int pos = Game.AddHighscore(score);
             if(score.MinesHit < score.TotalMines
-            && (scoreIndex = Game.GetScoreIndex(score)) >= 0)
-                mainPane.Add(CreateTextInputPane("New Highscore! Enter your Name:"));
+            && pos <= Minestory.MAX_SCORES_PER_DIFF)
+                mainPane.Add(CreateTextInputPane(
+                    "New Highscore! Rank " + pos + ". Enter your Name:"));
             else mainPane.Add(CreateNavPane());
         }
 
@@ -143,29 +145,19 @@ namespace Chaotx.Minestory {
 
             textField.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Enter)
-                    AddHighscore(textField, vPane);
+                    SaveScore(textField, vPane);
             };
 
             confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
             confirm.FocusLoss += (s, a) => confirm.Text.Color = Color.White;
-            confirm.Action += (s, a) => AddHighscore(textField, vPane);
+            confirm.Action += (s, a) => SaveScore(textField, vPane);
 
             return vPane;
         }
 
-        private void AddHighscore(TextField textField, LayoutPane pane) {
+        private void SaveScore(TextField nameField, LayoutPane pane) {
             MapDifficulty diff = Game.Settings.Difficulty;
-            score.Name = textField.Text;
-
-            if(scoreIndex >= Game.Scores.Count())
-                Game.Scores.Add(score);
-            else Game.Scores.Insert(scoreIndex, score);
-
-            if(Game.Scores
-            .Where(s => s.Settings.Difficulty == diff)
-            .Count() > Minestory.MAX_SCORES_PER_DIFF)
-                Game.Scores.Remove(Game.Scores.FindLast(
-                    h => h.Settings.Difficulty == diff));
+            score.Name = nameField.Text;
 
             FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
             FileManager.SaveSettings(Game.SettingsPath, Game.Settings);

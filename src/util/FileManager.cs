@@ -1,6 +1,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.IO;
 using System;
 
@@ -14,18 +15,25 @@ namespace Chaotx.Minestory {
             return (GameSettings)Load(path);
         }
 
-        public static void SaveHighscores(string path, List<Highscore> scores) {
+        public static void SaveHighscores(string path, SortedSet<Highscore> scores) {
             Save(path, scores);
+            Task task = DropboxConnect.UploadScores(path);
+            while(DropboxConnect.IsConnected && !DropboxConnect.IsUploaded);
         }
 
-        public static List<Highscore> LoadHighscores(string path) {
-            return (List<Highscore>)Load(path);
+        public static SortedSet<Highscore> LoadHighscores(string path) {
+            Task task = DropboxConnect.DownloadScores(path);
+            while(DropboxConnect.IsConnected && !DropboxConnect.IsDownloaded);
+            return (SortedSet<Highscore>)Load(path);
         }
 
-        private static void Save(string path, object obj) {
+        public static void Save(string path, object obj) {
+            Save(path, obj, new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None));
+        }
+
+        public static void Save(string path, object obj, Stream stream) {
             try {
                 IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
                 formatter.Serialize(stream, obj);
                 stream.Close();
             } catch(Exception e) {
@@ -33,10 +41,13 @@ namespace Chaotx.Minestory {
             }
         }
 
-        private static object Load(string path) {
+        public static object Load(string path) {
+            return Load(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None));
+        }
+
+        public static object Load(Stream stream) {
             try {
                 IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None);
                 object obj = formatter.Deserialize(stream);
                 stream.Close();
                 return obj;

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System;
 
@@ -10,22 +11,25 @@ using Chaotx.Mgx.View;
 
 namespace Chaotx.Minestory {
     public class Minestory : Game {
+        public static readonly string SCORES_FILE = "scores";
+        public static readonly string SETTINGS_FILE = "settings";
         public static readonly int MAX_SCORES_PER_DIFF = 100;
         public static readonly int MIN_NAME_LEN = 3;
         public static readonly int MAX_NAME_LEN = 8;
 
         public string AppDirectory {get;}
-        public string ScoresPath => AppDirectory + Path.DirectorySeparatorChar + "scores";
-        public string SettingsPath => AppDirectory + Path.DirectorySeparatorChar + "settings";
+        public string ScoresPath => AppDirectory + Path.DirectorySeparatorChar + SCORES_FILE;
+        public string SettingsPath => AppDirectory + Path.DirectorySeparatorChar + SETTINGS_FILE;
 
-        public GameSettings Settings {get; set;} 
-        public List<Highscore> Scores {get; set;}
+        public GameSettings Settings {get; set;}
+        public SortedSet<Highscore> Scores {get; set;}
 
         private SpriteBatch spriteBatch;
         private ViewControl viewControl;
         GraphicsDeviceManager graphics;
 
         public Minestory(string appDirectory) {
+            DropboxConnect.Game = this;
             AppDirectory = appDirectory;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -43,45 +47,29 @@ namespace Chaotx.Minestory {
             }
         }
 
-        public int GetScoreIndex(Highscore score) {
-            if(MAX_SCORES_PER_DIFF <= 0) return -1;
-            Highscore current;
-            int i = 0, p = 0;
+        public int AddHighscore(Highscore score) {
+            Highscore lastSpot = null;
+            bool spotFound = false;
+            int curPos = 1, lastPos = 1;
 
-            for(; i < Scores.Count; ++i) {
-                current = Scores[i];
+            Scores.Where(s => s.Settings.Difficulty == score.Settings.Difficulty).ToList().ForEach(s => {
+                if(score <= s) spotFound = true;
+                if(!spotFound) ++curPos;
+                lastSpot = s;
+                ++lastPos;
+            });
 
-                if(current.Settings.Difficulty == Settings.Difficulty)
-                    if(++p > MAX_SCORES_PER_DIFF) return -1;
-
-                int diff1 = (((int)score.Settings.Difficulty)+1)%4;
-                int diff2 = (((int)current.Settings.Difficulty)+1)%4;
-
-                if(diff1 >= diff2) {
-                    float mines1 = 0;
-                    float mines2 = 0;
-
-                    if(diff1 == diff2) {
-                        mines1 = score.MinesHit/(float)score.TotalMines;
-                        mines2 = current.MinesHit/(float)current.TotalMines;
-                    } else
-
-                    if(diff1 > diff2) {
-                        mines1 = 0;
-                        mines2 = 1;
-                    }
-
-                    if(mines1 < mines2 || mines1 == mines2
-                    && score.Time <= current.Time)
-                        return i;
-                    else if(p == MAX_SCORES_PER_DIFF)
-                        return -1;
-                }
-            }
+            if(curPos < lastPos
+            && lastPos > MAX_SCORES_PER_DIFF)
+                Scores.Remove(lastSpot);
             
-            return i;
-        }
+            if(curPos <= MAX_SCORES_PER_DIFF
+            && !Scores.Contains(score))
+                Scores.Add(score);
 
+            return curPos;
+        }
+        
         public MapView CreateMapView(GameView parentView) {
             int vw = (int)(GraphicsDevice.Viewport.Width*0.75f);
             int vh = (int)(GraphicsDevice.Viewport.Height*0.75f);
@@ -93,12 +81,18 @@ namespace Chaotx.Minestory {
             return new MapView(parentView, gameMap, vw, vh, this);
         }
 
+        protected GameSettings CreateDefaultSettings() {
+            return new GameSettings(
+                MapDifficulty.Easy,
+                9, 9, 12, 70, 70);
+        }
+
         protected override void LoadContent() {
             Directory.CreateDirectory(AppDirectory);
             Settings = FileManager.LoadSettings(SettingsPath);
             Scores = FileManager.LoadHighscores(ScoresPath);
             if(Settings == null) Settings = CreateDefaultSettings();
-            if(Scores == null) Scores = new List<Highscore>();
+            if(Scores == null) Scores = new SortedSet<Highscore>();
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             viewControl.Add(menuView);
@@ -115,10 +109,6 @@ namespace Chaotx.Minestory {
             GraphicsDevice.Clear(Color.Black);
             viewControl.Draw(spriteBatch);
             base.Draw(gameTime);
-        }
-
-        private GameSettings CreateDefaultSettings() {
-            return new GameSettings(MapDifficulty.Easy, 9, 9, 12, 70, 70);
         }
     }
 }
