@@ -150,25 +150,25 @@ namespace Chaotx.Minestory {
 
             textField.KeyReleased += (s, a) => {
                 if(a.Key == Keys.Enter)
-                    SaveScore(textField, vPane);
+                    SaveScores(textField, vPane);
             };
 
             confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
             confirm.FocusLoss += (s, a) => confirm.Text.Color = Color.White;
-            confirm.Action += (s, a) => SaveScore(textField, vPane);
+            confirm.Action += (s, a) => SaveScores(textField, vPane);
 
             return vPane;
         }
 
-        private void SaveScore(TextField nameField, LayoutPane pane) {
+        private void SaveScores(TextField nameField, LayoutPane pane) {
             MapDifficulty diff = Game.Settings.Difficulty;
             score.Name = nameField.Text;
 
-            FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
-            FileManager.SaveSettings(Game.SettingsPath, Game.Settings);
-
-            mainPane.Remove(pane);
-            mainPane.Add(CreateNavPane());
+            Task.Run(() => {
+                mainPane.Remove(pane);
+                FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
+                mainPane.Add(CreateNavPane());
+            });
         }
     }
 }
