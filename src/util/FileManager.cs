@@ -28,7 +28,11 @@ namespace Chaotx.Minestory {
         }
 
         public static void Save(string path, object obj) {
-            Save(path, obj, new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None));
+            try {
+                Save(path, obj, new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None));
+            } catch(Exception e) {
+                Console.WriteLine("saving faield: " + e.Message);
+            }
         }
 
         public static void Save(string path, object obj, Stream stream) {
@@ -42,7 +46,12 @@ namespace Chaotx.Minestory {
         }
 
         public static object Load(string path) {
-            return Load(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None));
+            try {
+                return Load(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None));
+            } catch(Exception e) {
+                Console.WriteLine("loading failed: " + e.Message);
+                return null;
+            }
         }
 
         public static object Load(Stream stream) {
