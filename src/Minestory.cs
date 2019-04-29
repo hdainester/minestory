@@ -39,9 +39,13 @@ namespace Chaotx.Minestory {
 
         public void ApplyWindowMode(WindowMode mode) {
             if(mode == WindowMode.Fullscreen && !graphics.IsFullScreen) {
+                graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                 graphics.IsFullScreen = true;
                 graphics.ApplyChanges();
             } else if(mode == WindowMode.Windowed && graphics.IsFullScreen) {
+                graphics.PreferredBackBufferWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width*0.75f);
+                graphics.PreferredBackBufferHeight = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height*0.75f);
                 graphics.IsFullScreen = false;
                 graphics.ApplyChanges();
             }
@@ -95,6 +99,12 @@ namespace Chaotx.Minestory {
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             viewControl.Add(menuView);
+
+            // This ensures a change in the window mode which
+            // therefore (hopefully) guaranties the proper
+            // alignment of the main container in Windowed mode.
+            ApplyWindowMode(WindowMode.Windowed);
+            ApplyWindowMode(WindowMode.Fullscreen);
             ApplyWindowMode(Settings.WindowMode);
         }
 

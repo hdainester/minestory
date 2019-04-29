@@ -18,6 +18,7 @@ namespace Chaotx.Minestory {
         : this(null, game) {}
 
         public GameView(GameView parent, Minestory game) : base(game.Content, game.GraphicsDevice) {
+            game.Window.ClientSizeChanged += (s, a) => AlignMainContainer();
             Media = new MediaManager(game);
             Media.Repeat = RepeatMode.RepeatAll;
             FadeInTime = 800;

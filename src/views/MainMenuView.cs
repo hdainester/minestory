@@ -44,18 +44,24 @@ namespace Chaotx.Minestory {
             // ListMenu menu = new ListMenu(start, settings, highscore, quit); // TODO fix ctor
             ListMenu menu = new ListMenu();
             menu.ItemsOrientation = Orientation.Vertical;
-            menu.HAlign = HAlignment.Center;
-            menu.VAlign = VAlignment.Center;
+            menu.VAlign = VAlignment.Top;
             menu.AddItem(start);
             menu.AddItem(highscore);
             menu.AddItem(settings);
             menu.AddItem(quit);
 
+            HPane menuPane = new HPane(menu);
+            menuPane.HAlign = HAlignment.Center;
+            menuPane.VGrow = 1;
+
             ImageItem bannerItem = new ImageItem(banner);
             bannerItem.VAlign = VAlignment.Center;
             bannerItem.HGrow = 1;
 
-            VPane vPane = new VPane(bannerItem, menu);
+            HPane bannerPane = new HPane(bannerItem);
+            bannerPane.HGrow = bannerPane.VGrow = 1;
+
+            VPane vPane = new VPane(bannerPane, menuPane);
             vPane.HAlign = HAlignment.Center;
             vPane.HGrow = 0.8f;
             vPane.VGrow = 1;
