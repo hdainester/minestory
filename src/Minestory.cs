@@ -95,6 +95,7 @@ namespace Chaotx.Minestory {
             Directory.CreateDirectory(AppDirectory);
             Settings = FileManager.LoadSettings(SettingsPath);
             Scores = FileManager.LoadHighscores(ScoresPath);
+            FileManager.SaveHighscores(ScoresPath, Scores);
             if(Settings == null) Settings = CreateDefaultSettings();
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
