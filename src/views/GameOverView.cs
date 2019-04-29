@@ -7,8 +7,8 @@ using Chaotx.Mgx.Control.Menu;
 using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
 
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Chaotx.Minestory {
     public class GameOverView : GameView {

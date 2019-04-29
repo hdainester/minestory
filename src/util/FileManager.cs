@@ -24,7 +24,8 @@ namespace Chaotx.Minestory {
         public static SortedSet<Highscore> LoadHighscores(string path) {
             Task task = DropboxConnect.DownloadScores(path);
             while(DropboxConnect.IsConnected && !DropboxConnect.IsDownloaded);
-            return (SortedSet<Highscore>)Load(path);
+            SortedSet<Highscore> scores = (SortedSet<Highscore>)Load(path);
+            return scores != null ? scores : new SortedSet<Highscore>();
         }
 
         public static void Save(string path, object obj) {

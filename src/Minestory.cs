@@ -92,7 +92,6 @@ namespace Chaotx.Minestory {
             Settings = FileManager.LoadSettings(SettingsPath);
             Scores = FileManager.LoadHighscores(ScoresPath);
             if(Settings == null) Settings = CreateDefaultSettings();
-            if(Scores == null) Scores = new SortedSet<Highscore>();
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             viewControl.Add(menuView);
