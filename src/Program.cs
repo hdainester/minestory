@@ -6,7 +6,13 @@ namespace Chaotx.Minestory {
     public static class Program {
         [STAThread]
         static void Main(string[] args) {
-            if(args.Length == 1) DropboxConnect.AccessToken = args[0];
+            if(args.Length == 0) try {
+                DropboxConnect.AccessToken = File.ReadAllText("dbxacctok");
+            } catch(Exception e) {
+                Console.WriteLine("could not load dbxacctok: " + e.Message);
+            } else if(args.Length == 1)
+                DropboxConnect.AccessToken = args[0];
+
             Task task = DropboxConnect.Connect();
             while(!DropboxConnect.IsConnected
             && !DropboxConnect.ConnectionFailed);
