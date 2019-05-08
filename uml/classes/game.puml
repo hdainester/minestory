@@ -16,7 +16,7 @@ class MapTile {
     + GetNeighbours() : List<MapTile>
     + GetMineCount() : int
     + Reveal() : void
-    # <<virtual>> OnRevealed(arg : EventArgs = null) : void
+    # <<virtual>> OnRevealed(args : EventArgs = null) : void
 }
 
 note left
@@ -80,8 +80,8 @@ class Highscore {
 
     + {static} operator>(score1 : Highscore, score2 : Highscore) : bool
     + {static} operator<(score1 : Highscore, score2 : Highscore) : bool
-    + {static} operator>(score1 : Highscore, score2 : Highscore) : bool
-    + {static} operator<(score1 : Highscore, score2 : Highscore) : bool
+    + {static} operator>=(score1 : Highscore, score2 : Highscore) : bool
+    + {static} operator<=(score1 : Highscore, score2 : Highscore) : bool
 }
 
 note left
@@ -90,6 +90,7 @@ note left
     Das Überladen der Vergleichsoperatoren ist optional.
 end note
 
+interface IComparable
 IComparable <|.. Highscore
 Highscore -right-> "1" GameSettings
 GameSettings --() Serializabe
