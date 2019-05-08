@@ -149,7 +149,7 @@ namespace Chaotx.Minestory {
             };
 
             textField.KeyReleased += (s, a) => {
-                if(a.Key == Keys.Enter)
+                if(!confirm.IsDisabled && a.Key == Keys.Enter)
                     SaveScores(textField, vPane);
             };
 
