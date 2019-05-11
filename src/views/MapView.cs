@@ -84,25 +84,29 @@ namespace Chaotx.Minestory {
 
             StackPane sBack = new StackPane(backItem, vPane);
             sBack.HGrow = sBack.VGrow = 1;
-
-            ListMenu menu = new ListMenu();
-            menu.KeyReleased += (s, a) => {
-                if(a.Key == Keys.Escape) {
-                    ConfirmView confirmView = new ConfirmView(this,
-                        "Exit Running Game?",
-                        new ConfirmRespond("Yes", () => Close()),
-                        new ConfirmRespond("Restart", () => {Close(); Manager.Add(Game.CreateMapView(Parent));}),
-                        new ConfirmRespond("No", () => InputDisabled = false));
-                        
-                    Manager.Add(confirmView, false);
-                    InputDisabled = true;
-                }
-            };
-
+            
             InitMapPane(mapPane);
             MainContainer.Clear();
             MainContainer.Add(sBack);
-            MainContainer.Add(menu);
+        }
+
+        protected override void HandleInput() {
+            base.HandleInput();
+
+            Keys key;
+            Buttons button;
+
+            if(InputArgs.Keys.TryGetValue(Keys.Escape, out key) && Keyboard.GetState().IsKeyDown(key)
+            || InputArgs.Buttons.TryGetValue(Buttons.Back, out button) && GamePad.GetState(0).IsButtonDown(button)) {
+                ConfirmView confirmView = new ConfirmView(this,
+                    "Exit Running Game?",
+                    new ConfirmRespond("Yes", () => Close()),
+                    new ConfirmRespond("Restart", () => {Close(); Manager.Add(Game.CreateMapView(Parent));}),
+                    new ConfirmRespond("No", () => InputDisabled = false));
+                    
+                Manager.Add(confirmView, false);
+                InputDisabled = true;
+            }
         }
 
         public GameOverView CreateGameOverView() {
@@ -135,7 +139,7 @@ namespace Chaotx.Minestory {
             for(int x = 0; x < Map.Tiles.Length; ++x) {
                 ListMenu vList = new ListMenu();
                 vList.ItemsOrientation = Mgx.Control.Orientation.Vertical;
-                vList.KeyBoardEnabled = false;
+                // vList.KeyBoardEnabled = false;
                 mapPane.Add(vList);
 
                 for(int y = 0; y < Map.Tiles[0].Length; ++y) {

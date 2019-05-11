@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Chaotx.Mgx.Control.Menu;
 using Chaotx.Mgx.Control;
 using Chaotx.Mgx.Layout;
+using Chaotx.Mgx.View;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace Chaotx.Minestory {
 
         private List<ConfirmRespond> responds;
         private string message;
+        private Action action;
+        private bool performed;
 
         public ConfirmView(GameView parent, string message,
         params ConfirmRespond[] responds) : base(parent) {
@@ -77,7 +80,7 @@ namespace Chaotx.Minestory {
                 item.FocusGain += (s, a) => item.Text.Color = Color.Yellow;
                 item.FocusLoss += (s, a) => item.Text.Color = Color.White;
                 item.Action += (s, a) => {
-                    respond.Action();
+                    action = respond.Action;
                     Close();
                 };
             });
@@ -85,6 +88,14 @@ namespace Chaotx.Minestory {
             MainContainer.Clear();
             MainContainer.Add(background);
             MainContainer.Add(sPane);
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            if(!performed && State == ViewState.Closed) {
+                performed = true;
+                action();
+            }
         }
     }
 }
