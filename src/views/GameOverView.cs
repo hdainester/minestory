@@ -144,13 +144,12 @@ namespace Chaotx.Minestory {
                 confirm.IsDisabled = textField.Text.Length < Minestory.MIN_NAME_LEN;
                 confirm.Alpha = confirm.IsDisabled ? 0.5f : 1;
 
+                int cx = (int)(confirm.X + confirm.Width/2);
+                int cy = (int)(confirm.Y + confirm.Height/2);
+                Mouse.SetPosition(cx, cy + (confirm.IsDisabled ? + 1 : 0)); // forces focus gain
+
                 if(textField.Text.Length > Minestory.MAX_NAME_LEN)
                     textField.Text = textField.Text.Remove(Minestory.MAX_NAME_LEN);
-            };
-
-            textField.KeyReleased += (s, a) => {
-                if(!confirm.IsDisabled && a.Key == Keys.Enter)
-                    SaveScores(textField, vPane);
             };
 
             confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
