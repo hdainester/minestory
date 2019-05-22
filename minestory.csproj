@@ -21,5 +21,10 @@
     <Reference Include="Chaotx.Mgx">
       <HintPath>../libs/mgx/bin/Debug/netstandard2.0/mgx.dll</HintPath>
     </Reference>
+
+    <!-- Include this reference only for testing -->
+    <!-- <Reference Include="Chaot.Mgx.Pipeline">
+      <HintPath>../mgx_pipe/bin/Debug/netstandard2.0/mgx_pipe.dll</HintPath>
+    </Reference> -->
   </ItemGroup>
 </Project>

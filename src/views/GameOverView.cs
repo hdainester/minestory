@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
 
 using System.Threading.Tasks;
@@ -23,20 +23,21 @@ namespace Chaotx.Minestory {
 
         public GameOverView(MapView parent, Highscore score) : base(parent) {
             this.score = score;
+            // Init(); // called automatically after added to a manager
+        }
+
+        protected override void Init() {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
             background.Color = Color.Black;
             background.Alpha = 0.5f;
-            Init();
-        }
-
-        public override void Init() {
+            
             TextItem gameOver = new TextItem(font, "Game Over");
             gameOver.HAlign = HAlignment.Center;
             gameOver.VAlign = VAlignment.Center;
-            gameOver.LayoutWithTrueSize = true;
+            gameOver.IsSizeScaled = true;
             gameOver.Scale = 2;
 
             HPane hGameOver = new HPane(gameOver);
@@ -67,9 +68,10 @@ namespace Chaotx.Minestory {
             VPane vPane = new VPane(sTop, mainPane);
             vPane.HGrow = vPane.VGrow = 1;
 
-            MainContainer.Clear();
-            MainContainer.Add(background);
-            MainContainer.Add(vPane);
+            ViewPane.Clear();
+            RootPane = new StackPane(background, vPane);
+            RootPane.HGrow = RootPane.VGrow = 1;
+            ViewPane.Add(RootPane);
 
             Task.Run(() => {
                 Game.Scores = FileManager.LoadHighscores(Game.ScoresPath);
@@ -98,11 +100,11 @@ namespace Chaotx.Minestory {
             hPane.VAlign = VAlignment.Center;
             hPane.HGrow = hPane.VGrow = 1;
 
-            newGame.FocusGain += (s, a) => newGame.Text.Color = Color.Yellow;
-            newGame.FocusLoss += (s, a) => newGame.Text.Color = Color.White;
+            newGame.FocusGain += (s, a) => newGame.TextItem.Color = Color.Yellow;
+            newGame.FocusLoss += (s, a) => newGame.TextItem.Color = Color.White;
 
-            mainMenu.FocusGain += (s, a) => mainMenu.Text.Color = Color.Yellow;
-            mainMenu.FocusLoss += (s, a) => mainMenu.Text.Color = Color.White;
+            mainMenu.FocusGain += (s, a) => mainMenu.TextItem.Color = Color.Yellow;
+            mainMenu.FocusLoss += (s, a) => mainMenu.TextItem.Color = Color.White;
 
             newGame.Action += (s, a) => {
                 Manager.Add(Game.CreateMapView(Parent.Parent));
@@ -152,8 +154,8 @@ namespace Chaotx.Minestory {
                     textField.Text = textField.Text.Remove(Minestory.MAX_NAME_LEN);
             };
 
-            confirm.FocusGain += (s, a) => confirm.Text.Color = Color.Yellow;
-            confirm.FocusLoss += (s, a) => confirm.Text.Color = Color.White;
+            confirm.FocusGain += (s, a) => confirm.TextItem.Color = Color.Yellow;
+            confirm.FocusLoss += (s, a) => confirm.TextItem.Color = Color.White;
             confirm.Action += (s, a) => SaveScores(textField, vPane);
 
             return vPane;

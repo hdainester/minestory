@@ -1,10 +1,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -67,10 +67,10 @@ namespace Chaotx.Minestory {
 
         public SettingsView(GameView parent, Minestory game) : base(parent) {
             this.game = game;
-            Init();
+            // Init(); // called automatically after added to a manager
         }
 
-        public override void Init() {
+        protected override void Init() {
             font = Content.Load<SpriteFont>("fonts/menu_font");
             blank = Content.Load<Texture2D>("textures/blank");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
@@ -130,11 +130,10 @@ namespace Chaotx.Minestory {
 
             StackPane sMain = new StackPane(backItem, vPane);
             sMain.HGrow = sMain.VGrow = 1;
+            ViewPane.Add(RootPane = sMain);
 
-            MainContainer.Add(sMain);
-
-            accept.FocusGain += (s, a) => accept.Text.Color = Color.Yellow;
-            accept.FocusLoss += (s, a) => accept.Text.Color = Color.White;
+            accept.FocusGain += (s, a) => accept.TextItem.Color = Color.Yellow;
+            accept.FocusLoss += (s, a) => accept.TextItem.Color = Color.White;
             accept.Action += (s, a) => {
                 game.Settings = CreateGameSettings();
                 FileManager.SaveSettings(Game.SettingsPath, game.Settings);
@@ -142,8 +141,8 @@ namespace Chaotx.Minestory {
                 Close();
             };
 
-            back.FocusGain += (s, a) => back.Text.Color = Color.Yellow;
-            back.FocusLoss += (s, a) => back.Text.Color = Color.White;
+            back.FocusGain += (s, a) => back.TextItem.Color = Color.Yellow;
+            back.FocusLoss += (s, a) => back.TextItem.Color = Color.White;
             back.Action += (s, a) => Close();
 
             entries["difficulty"].ArrowLeft.Action += (s, a) => {
@@ -208,10 +207,10 @@ namespace Chaotx.Minestory {
             entries["windowMode"].ArrowRight.Action += (s, a) => entries["windowMode"].Value = WindowMode.Fullscreen;
 
             entries.Values.ToList().ForEach(entry => {
-                entry.ArrowLeft.FocusGain += (s, a) => entry.ArrowLeft.Image.Color = Color.Yellow;
-                entry.ArrowLeft.FocusLoss += (s, a) => entry.ArrowLeft.Image.Color = Color.White;
-                entry.ArrowRight.FocusGain += (s, a) => entry.ArrowRight.Image.Color = Color.Yellow;
-                entry.ArrowRight.FocusLoss += (s, a) => entry.ArrowRight.Image.Color = Color.White;
+                entry.ArrowLeft.FocusGain += (s, a) => entry.ArrowLeft.ImageItem.Color = Color.Yellow;
+                entry.ArrowLeft.FocusLoss += (s, a) => entry.ArrowLeft.ImageItem.Color = Color.White;
+                entry.ArrowRight.FocusGain += (s, a) => entry.ArrowRight.ImageItem.Color = Color.Yellow;
+                entry.ArrowRight.FocusLoss += (s, a) => entry.ArrowRight.ImageItem.Color = Color.White;
             });
         }
 

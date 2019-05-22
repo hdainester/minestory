@@ -2,10 +2,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 namespace Chaotx.Minestory {
     public class MainMenuView : GameView {
@@ -16,10 +16,10 @@ namespace Chaotx.Minestory {
         public MainMenuView(Minestory game) : base(game) {
             Media.AddSong("audio/songs/menu_theme_0");
             // Media.AddSong("audio/songs/menu_theme_1");
-            Init();
+            // Init(); // called automatically after added to a manager
         }
 
-        public override void Init() {
+        protected override void Init() {
             Background = Content.Load<Texture2D>("textures/home_back");
             banner = Content.Load<Texture2D>("textures/banner");
             font = Content.Load<SpriteFont>("fonts/menu_font");
@@ -31,15 +31,15 @@ namespace Chaotx.Minestory {
             MenuItem settings = new MenuItem("Settings", font);
             MenuItem quit = new MenuItem("Quit", font);
 
-            start.FocusGain += (s, a) => start.Text.Color = Color.Yellow;
-            settings.FocusGain += (s, a) => settings.Text.Color = Color.Yellow;
-            highscore.FocusGain += (s, a) => highscore.Text.Color = Color.Yellow;
-            quit.FocusGain += (s, a) => quit.Text.Color = Color.Yellow;
+            start.FocusGain += (s, a) => start.TextItem.Color = Color.Yellow;
+            settings.FocusGain += (s, a) => settings.TextItem.Color = Color.Yellow;
+            highscore.FocusGain += (s, a) => highscore.TextItem.Color = Color.Yellow;
+            quit.FocusGain += (s, a) => quit.TextItem.Color = Color.Yellow;
 
-            start.FocusLoss += (s, a) => start.Text.Color = Color.White;
-            settings.FocusLoss += (s, a) => settings.Text.Color = Color.White;
-            highscore.FocusLoss += (s, a) => highscore.Text.Color = Color.White;
-            quit.FocusLoss += (s, a) => quit.Text.Color = Color.White;
+            start.FocusLoss += (s, a) => start.TextItem.Color = Color.White;
+            settings.FocusLoss += (s, a) => settings.TextItem.Color = Color.White;
+            highscore.FocusLoss += (s, a) => highscore.TextItem.Color = Color.White;
+            quit.FocusLoss += (s, a) => quit.TextItem.Color = Color.White;
 
             // ListMenu menu = new ListMenu(start, settings, highscore, quit); // TODO fix ctor
             ListMenu menu = new ListMenu();
@@ -54,7 +54,7 @@ namespace Chaotx.Minestory {
             menuPane.HAlign = HAlignment.Center;
             menuPane.VGrow = 1;
 
-            ImageItem bannerItem = new ImageItem(banner);
+            ImageItem bannerItem = new ImageItem(banner, 400, 200);
             bannerItem.VAlign = VAlignment.Center;
             bannerItem.HGrow = 1;
 
@@ -66,9 +66,10 @@ namespace Chaotx.Minestory {
             vPane.HGrow = 0.8f;
             vPane.VGrow = 1;
 
-            MainContainer.Clear();
-            MainContainer.Add(backItem);
-            MainContainer.Add(vPane);
+            ViewPane.Clear();
+            RootPane = new StackPane(backItem, vPane);
+            RootPane.HGrow = RootPane.VGrow = 1;
+            ViewPane.Add(RootPane);
 
             start.Action += (s, a) => {
                 Manager.Add(Game.CreateMapView(this));

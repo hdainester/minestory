@@ -7,7 +7,7 @@ using System.Linq;
 using System.IO;
 using System;
 
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 namespace Chaotx.Minestory {
     public class Minestory : Game {
@@ -25,7 +25,7 @@ namespace Chaotx.Minestory {
         public SortedSet<Highscore> Scores {get; set;}
 
         private SpriteBatch spriteBatch;
-        private ViewControl viewControl;
+        private ViewManager viewManager;
         GraphicsDeviceManager graphics;
 
         public Minestory(string appDirectory) {
@@ -34,7 +34,7 @@ namespace Chaotx.Minestory {
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
-            viewControl = new ViewControl();
+            viewManager = new ViewManager(Content, graphics);
         }
 
         public void ApplyWindowMode(WindowMode mode) {
@@ -99,7 +99,7 @@ namespace Chaotx.Minestory {
             if(Settings == null) Settings = CreateDefaultSettings();
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            viewControl.Add(menuView);
+            viewManager.Add(menuView);
 
             // This ensures a change in the window mode which
             // therefore (hopefully) guaranties the proper
@@ -110,14 +110,14 @@ namespace Chaotx.Minestory {
         }
 
         protected override void Update(GameTime gameTime) {
-            if(viewControl.Views.Count == 0) Exit();
-            viewControl.Update(gameTime);
+            if(viewManager.Views.Count == 0) Exit();
+            viewManager.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
-            viewControl.Draw(spriteBatch);
+            viewManager.Draw(spriteBatch);
             base.Draw(gameTime);
         }
     }

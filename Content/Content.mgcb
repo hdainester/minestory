@@ -10,6 +10,8 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\libs\mgx\bin\Debug\netstandard2.0\mgx.dll
+/reference:..\..\mgx_pipe\bin\Debug\netstandard2.0\mgx_pipe.dll
 
 #---------------------------------- Content ---------------------------------#
 

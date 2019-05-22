@@ -2,10 +2,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -34,14 +34,14 @@ namespace Chaotx.Minestory {
 
         public ConfirmView(GameView parent, string message,
         params ConfirmRespond[] responds) : base(parent) {
-            font = Content.Load<SpriteFont>("fonts/menu_font");
-            blank = Content.Load<Texture2D>("textures/blank");
             this.responds = responds.ToList();
             this.message = message;
-            Init();
+            // Init(); // called automatically after added to a manager
         }
 
-        public override void Init() {
+        protected override void Init() {
+            font = Content.Load<SpriteFont>("fonts/menu_font");
+            blank = Content.Load<Texture2D>("textures/blank");
             background = new ImageItem(blank);
             background.HGrow = background.VGrow = 1;
             background.Color = Color.Black;
@@ -77,17 +77,18 @@ namespace Chaotx.Minestory {
                 MenuItem item = new MenuItem(respond.Text, font);
                 menu.AddItem(item);
 
-                item.FocusGain += (s, a) => item.Text.Color = Color.Yellow;
-                item.FocusLoss += (s, a) => item.Text.Color = Color.White;
+                item.FocusGain += (s, a) => item.TextItem.Color = Color.Yellow;
+                item.FocusLoss += (s, a) => item.TextItem.Color = Color.White;
                 item.Action += (s, a) => {
                     action = respond.Action;
                     Close();
                 };
             });
 
-            MainContainer.Clear();
-            MainContainer.Add(background);
-            MainContainer.Add(sPane);
+            ViewPane.Clear();
+            RootPane = new StackPane(background, sPane);
+            RootPane.HGrow = RootPane.VGrow = 1;
+            ViewPane.Add(RootPane);
         }
 
         public override void Update(GameTime gameTime) {

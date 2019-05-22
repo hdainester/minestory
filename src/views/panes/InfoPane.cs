@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
 using Chaotx.Mgx.Layout;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls;
 
 using System.Linq;
 

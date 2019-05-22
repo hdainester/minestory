@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
 
 namespace Chaotx.Minestory {
@@ -24,10 +24,10 @@ namespace Chaotx.Minestory {
 
         public HighscoreView(GameView parent, Minestory game) : base(parent, game) {
             this.game = game;
-            Init();
+            // Init(); // called automatically after added to a manager
         }
 
-        public override void Init() {
+        protected override void Init() {
             arrRight = Content.Load<Texture2D>("textures/arrow_right");
             arrLeft = Content.Load<Texture2D>("textures/arrow_left");
             font = Content.Load<SpriteFont>("fonts/menu_font");
@@ -90,19 +90,20 @@ namespace Chaotx.Minestory {
             ImageItem backItem = new ImageItem(Parent.Background);
             backItem.HGrow = backItem.VGrow = 1;
 
-            MainContainer.Clear();
-            MainContainer.Add(backItem);
-            MainContainer.Add(vPane);
+            ViewPane.Clear();
+            RootPane = new StackPane(backItem, vPane);
+            RootPane.HGrow = RootPane.VGrow = 1;
+            ViewPane.Add(RootPane);
 
-            leftDiff.FocusGain += (s, a) => leftDiff.Image.Color = Color.Yellow;
-            leftDiff.FocusLoss += (s, a) => leftDiff.Image.Color = Color.White;
-            rightDiff.FocusGain += (s, a) => rightDiff.Image.Color = Color.Yellow;
-            rightDiff.FocusLoss += (s, a) => rightDiff.Image.Color = Color.White;
+            leftDiff.FocusGain += (s, a) => leftDiff.ImageItem.Color = Color.Yellow;
+            leftDiff.FocusLoss += (s, a) => leftDiff.ImageItem.Color = Color.White;
+            rightDiff.FocusGain += (s, a) => rightDiff.ImageItem.Color = Color.Yellow;
+            rightDiff.FocusLoss += (s, a) => rightDiff.ImageItem.Color = Color.White;
 
-            leftPage.FocusGain += (s, a) => leftPage.Image.Color = Color.Yellow;
-            leftPage.FocusLoss += (s, a) => leftPage.Image.Color = Color.White;
-            rightPage.FocusGain += (s, a) => rightPage.Image.Color = Color.Yellow;
-            rightPage.FocusLoss += (s, a) => rightPage.Image.Color = Color.White;
+            leftPage.FocusGain += (s, a) => leftPage.ImageItem.Color = Color.Yellow;
+            leftPage.FocusLoss += (s, a) => leftPage.ImageItem.Color = Color.White;
+            rightPage.FocusGain += (s, a) => rightPage.ImageItem.Color = Color.Yellow;
+            rightPage.FocusLoss += (s, a) => rightPage.ImageItem.Color = Color.White;
 
             MapDifficulty selectedDiff = game.Settings.Difficulty;
             for(int i = 0; i < (int)selectedDiff; ++i) tPane.NextTab();
@@ -171,8 +172,8 @@ namespace Chaotx.Minestory {
                 UpdateArrow(rightPage);
             };
 
-            back.FocusGain += (s, a) => back.Text.Color = Color.Yellow;
-            back.FocusLoss += (s, a) => back.Text.Color = Color.White;
+            back.FocusGain += (s, a) => back.TextItem.Color = Color.Yellow;
+            back.FocusLoss += (s, a) => back.TextItem.Color = Color.White;
             back.Action += (s, a) => Close();
         }
 
@@ -222,11 +223,11 @@ namespace Chaotx.Minestory {
 
         private void UpdateArrow(MenuItem arrow) {
             if(arrow.IsDisabled) {
-                arrow.Image.Color = Color.Gray;
-                arrow.Image.Alpha = 0.8f;
+                arrow.ImageItem.Color = Color.Gray;
+                arrow.ImageItem.Alpha = 0.8f;
             } else if(!arrow.IsFocused) {
-                arrow.Image.Color = Color.White;
-                arrow.Image.Alpha = 1;
+                arrow.ImageItem.Color = Color.White;
+                arrow.ImageItem.Alpha = 1;
             }
         }
 

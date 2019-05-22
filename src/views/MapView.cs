@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.Control.Menu;
-using Chaotx.Mgx.Control;
+using Chaotx.Mgx.Controls.Menus;
+using Chaotx.Mgx.Controls;
 using Chaotx.Mgx.Layout;
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -39,10 +39,10 @@ namespace Chaotx.Minestory {
             Media.AddSong("audio/songs/game_theme_0");
             Media.AddSound("audio/sounds/numb_revealed");
             Media.AddSound("audio/sounds/mine_revealed");
-            Init();
+            // Init(); // called automatically after added to a manager
         }
 
-        public override void Init() {
+        protected override void Init() {
             revealedTextures = new Texture2D[10];
             hiddenTexture = Content.Load<Texture2D>("textures/tile_hid_0");
             font = Content.Load<SpriteFont>("fonts/menu_font");
@@ -86,8 +86,8 @@ namespace Chaotx.Minestory {
             sBack.HGrow = sBack.VGrow = 1;
             
             InitMapPane(mapPane);
-            MainContainer.Clear();
-            MainContainer.Add(sBack);
+            ViewPane.Clear();
+            ViewPane.Add(RootPane = sBack);
         }
 
         protected override void HandleInput() {
@@ -138,7 +138,7 @@ namespace Chaotx.Minestory {
 
             for(int x = 0; x < Map.Tiles.Length; ++x) {
                 ListMenu vList = new ListMenu();
-                vList.ItemsOrientation = Mgx.Control.Orientation.Vertical;
+                vList.ItemsOrientation = Orientation.Vertical;
                 // vList.KeyBoardEnabled = false;
                 mapPane.Add(vList);
 
@@ -147,8 +147,8 @@ namespace Chaotx.Minestory {
                     itemMap.Add(item, new Point(x, y));
                     vList.AddItem(item);
 
-                    item.FocusGain += (s, a) => item.Image.Color = Color.Silver;
-                    item.FocusLoss += (s, a) => item.Image.Color = Color.White;
+                    item.FocusGain += (s, a) => item.ImageItem.Color = Color.Silver;
+                    item.FocusLoss += (s, a) => item.ImageItem.Color = Color.White;
 
                     item.Action += (s, a) => {
                         Point p = itemMap[item];
@@ -170,7 +170,7 @@ namespace Chaotx.Minestory {
                     Map.Tiles[x][y].Revealed += (s, a) => {
                         MapTile tile = (MapTile)s;
                         item.IsDisabled = !tile.IsHidden;
-                        item.Image.Image = tile.IsHidden ? hiddenTexture
+                        item.ImageItem.Image = tile.IsHidden ? hiddenTexture
                             : tile.HasMine ? revealedTextures[9]
                             : revealedTextures[tile.GetMineCount()];
                     };

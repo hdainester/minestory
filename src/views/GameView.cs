@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 
-using Chaotx.Mgx.View;
+using Chaotx.Mgx.Views;
 
 namespace Chaotx.Minestory {
     public abstract class GameView : FadingView {
@@ -17,8 +17,8 @@ namespace Chaotx.Minestory {
         public GameView(Minestory game)
         : this(null, game) {}
 
-        public GameView(GameView parent, Minestory game) : base(game.Content, game.GraphicsDevice) {
-            game.Window.ClientSizeChanged += (s, a) => AlignMainContainer();
+        public GameView(GameView parent, Minestory game) : base() {
+            game.Window.ClientSizeChanged += (s, a) => AlignViewPane();
             Media = new MediaManager(game);
             Media.Repeat = RepeatMode.RepeatAll;
             FadeInTime = 800;
@@ -54,7 +54,5 @@ namespace Chaotx.Minestory {
             base.Update(gameTime);
             Media.Update(gameTime);
         }
-
-        public abstract void Init();
     }
 }
