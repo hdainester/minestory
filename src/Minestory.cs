@@ -112,6 +112,7 @@ namespace Chaotx.Minestory {
             Directory.CreateDirectory(AppDirectory);
             Settings = FileManager.LoadSettings(SettingsPath);
             Scores = FileManager.LoadHighscores(ScoresPath);
+            CompressScores(); // TODO temp solution (see below)
             FileManager.SaveHighscores(ScoresPath, Scores);
             if(Settings == null) Settings = CreateDefaultSettings();
             MainMenuView menuView = new MainMenuView(this);
@@ -136,6 +137,20 @@ namespace Chaotx.Minestory {
             GraphicsDevice.Clear(Color.Black);
             viewManager.Draw(spriteBatch);
             base.Draw(gameTime);
+        }
+
+        // TODO remove this method if everyone has atleast
+        // called it once on his/her system (-.-)
+        private void CompressScores() {
+            var best = new HashSet<Highscore>();
+
+            Scores.ToList().ForEach(score => {
+                if(best.Where(score2 => score.Name.Equals(score2.Name)
+                && score.Settings.Difficulty == score2.Settings.Difficulty).Count() == 0)
+                    best.Add(score);
+            });
+
+            Scores.RemoveWhere(s => !best.Contains(s));
         }
     }
 }
