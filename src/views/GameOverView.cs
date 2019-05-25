@@ -9,10 +9,11 @@ using Chaotx.Mgx.Layout;
 
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Chaotx.Minestory {
     public class GameOverView : GameView {
-        private Highscore score;
+        private Highscore score, kicked;
 
         private SpriteFont font;
         private Texture2D blank;
@@ -20,6 +21,7 @@ namespace Chaotx.Minestory {
 
         private int scoreIndex;
         private LayoutPane mainPane;
+        private string message;
 
         public GameOverView(MapView parent, Highscore score) : base(parent) {
             this.score = score;
@@ -75,13 +77,13 @@ namespace Chaotx.Minestory {
 
             Task.Run(() => {
                 Game.Scores = FileManager.LoadHighscores(Game.ScoresPath);
-                int pos = Game.AddHighscore(score);
+                int pos = Game.AddHighscore(score, out kicked);
 
                 if(score.MinesHit < score.TotalMines
-                && pos <= Minestory.MAX_SCORES_PER_DIFF)
-                    mainPane.Add(CreateTextInputPane(
-                        "New Highscore! Rank " + pos + ". Enter your Name:"));
-                else mainPane.Add(CreateNavPane());
+                && pos <= Minestory.MAX_SCORES_PER_DIFF) {
+                    message = "New Highscore! Rank " + pos + ". Enter your Name:";
+                    mainPane.Add(CreateTextInputPane(message));
+                } else mainPane.Add(CreateNavPane());
             });
         }
 
@@ -165,11 +167,42 @@ namespace Chaotx.Minestory {
             MapDifficulty diff = Game.Settings.Difficulty;
             score.Name = nameField.Text;
 
-            Task.Run(() => {
+            int p = 1;
+            Highscore best = null;
+            List<Highscore> dups = new List<Highscore>();
+            var it = Game.ScoresOf(diff).GetEnumerator();
+
+            for(it.MoveNext(); it.Current != null; it.MoveNext()) {
+                if(it.Current.Name.Equals(score.Name)) {
+                    if(best == null)
+                        best = it.Current;
+                    else dups.Add(it.Current);
+                }
+
+                if(best == null) ++p;
+            }
+
+            if(score == best) {
+                Task.Run(() => {
+                    mainPane.Remove(pane);
+                    dups.ForEach(Game.RemoveHighscore);
+                    FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
+                    mainPane.Add(CreateNavPane());
+                });
+            } else {
+                Game.Scores.Remove(score);
+                if(kicked != null) Game.Scores.Add(kicked);
+                var ti = new TextItem(font, string.Format("A better score by {0} exists already at Rank {1}.", best.Name, p));
+                var fp = new FadingPane(2000);
+                fp.HGrow = fp.VGrow = 1;
+                ti.HAlign = HAlignment.Center;
+                ti.VAlign = VAlignment.Center;
+                fp.Add(ti);
+
+                fp.Death += (s, a) => mainPane.Add(CreateNavPane());
                 mainPane.Remove(pane);
-                FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
-                mainPane.Add(CreateNavPane());
-            });
+                mainPane.Add(fp);
+            }
         }
     }
 }

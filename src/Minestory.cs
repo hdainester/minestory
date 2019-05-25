@@ -52,9 +52,15 @@ namespace Chaotx.Minestory {
         }
 
         public int AddHighscore(Highscore score) {
+            Highscore kicked;
+            return AddHighscore(score, out kicked);
+        }
+
+        public int AddHighscore(Highscore score, out Highscore kicked) {
             Highscore lastSpot = null;
             bool spotFound = false;
             int curPos = 1, lastPos = 1;
+            kicked = null;
 
             Scores.Where(s => s.Settings.Difficulty == score.Settings.Difficulty).ToList().ForEach(s => {
                 if(score <= s) spotFound = true;
@@ -64,8 +70,10 @@ namespace Chaotx.Minestory {
             });
 
             if(curPos < lastPos
-            && lastPos > MAX_SCORES_PER_DIFF)
+            && lastPos > MAX_SCORES_PER_DIFF) {
                 Scores.Remove(lastSpot);
+                kicked = lastSpot;
+            }
             
             if(curPos <= MAX_SCORES_PER_DIFF
             && !Scores.Contains(score))
@@ -73,7 +81,16 @@ namespace Chaotx.Minestory {
 
             return curPos;
         }
-        
+
+        public void RemoveHighscore(Highscore score) {
+            Scores.Remove(score);
+        }
+
+        public List<Highscore> ScoresOf(MapDifficulty difficulty, string name = null) {
+            return Scores.Where(score => (name == null || score.Name.Equals(name))
+                && score.Settings.Difficulty == difficulty).ToList();
+        }
+
         public MapView CreateMapView(GameView parentView) {
             int vw = (int)(GraphicsDevice.Viewport.Width*0.75f);
             int vh = (int)(GraphicsDevice.Viewport.Height*0.75f);
