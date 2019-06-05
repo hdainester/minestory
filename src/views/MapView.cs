@@ -173,9 +173,30 @@ namespace Chaotx.Minestory {
                         item.ImageItem.Image = tile.IsHidden ? hiddenTexture
                             : tile.HasMine ? revealedTextures[9]
                             : revealedTextures[tile.GetMineCount()];
+
+                        // TODO test
+                        tile.GetNeighbours().ToList().ForEach(n => CutOutMine(n));
                     };
                 }
             }
+        }
+
+        private bool CutOutMine(MapTile mine, HashSet<MapTile> visited = null) {
+            var itm = itemMap.Keys.Where(k => itemMap[k].Equals(new Point(mine.X, mine.Y))).First();
+            if(!mine.HasMine && !mine.IsHidden || itm.IsDisabled) return true;
+            if(!mine.HasMine && mine.IsHidden) return false;
+            if(visited == null) visited = new HashSet<MapTile>();
+            visited.Add(mine);
+
+            foreach(var n in mine.GetNeighbours().Where(n => !visited.Contains(n)))
+                if(!CutOutMine(n, visited)) return false;
+
+            if(mine.HasMine) {
+                itm.ImageItem.Color = Color.Gray;
+                itm.IsDisabled = true;
+            }
+
+            return true;
         }
     }
 }

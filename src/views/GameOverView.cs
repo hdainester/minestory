@@ -199,7 +199,11 @@ namespace Chaotx.Minestory {
                 ti.VAlign = VAlignment.Center;
                 fp.Add(ti);
 
-                fp.Death += (s, a) => mainPane.Add(CreateNavPane());
+                fp.FadedOut += (s, a) => {
+                    mainPane.Remove(fp);
+                    mainPane.Add(CreateNavPane());
+                };
+
                 mainPane.Remove(pane);
                 mainPane.Add(fp);
             }
