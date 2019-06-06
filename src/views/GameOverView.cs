@@ -187,6 +187,7 @@ namespace Chaotx.Minestory {
                     mainPane.Remove(pane);
                     dups.ForEach(Game.RemoveHighscore);
                     FileManager.SaveHighscores(Game.ScoresPath, Game.Scores);
+                    MySqlHelper.Instance.Sync(Game);
                     mainPane.Add(CreateNavPane());
                 });
             } else {

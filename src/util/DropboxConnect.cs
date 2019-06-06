@@ -8,6 +8,7 @@ using Dropbox.Api.Files;
 using Dropbox.Api;
 
 namespace Chaotx.Minestory {
+    [Obsolete("MySqlHelper serves this role now")]
     public static class DropboxConnect {
         private static string DBX_SCORES_PATH = "/scores";
         private static SortedSet<Highscore> onlineScores = new SortedSet<Highscore>();

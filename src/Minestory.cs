@@ -29,7 +29,6 @@ namespace Chaotx.Minestory {
         GraphicsDeviceManager graphics;
 
         public Minestory(string appDirectory) {
-            DropboxConnect.Game = this;
             AppDirectory = appDirectory;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -62,7 +61,7 @@ namespace Chaotx.Minestory {
             int curPos = 1, lastPos = 1;
             kicked = null;
 
-            Scores.Where(s => s.Settings.Difficulty == score.Settings.Difficulty).ToList().ForEach(s => {
+            Scores.Where(s => s.Difficulty == score.Difficulty).ToList().ForEach(s => {
                 if(score <= s) spotFound = true;
                 if(!spotFound) ++curPos;
                 lastSpot = s;
@@ -88,7 +87,7 @@ namespace Chaotx.Minestory {
 
         public List<Highscore> ScoresOf(MapDifficulty difficulty, string name = null) {
             return Scores.Where(score => (name == null || score.Name.Equals(name))
-                && score.Settings.Difficulty == difficulty).ToList();
+                && score.Difficulty == difficulty).ToList();
         }
 
         public MapView CreateMapView(GameView parentView) {
@@ -108,13 +107,18 @@ namespace Chaotx.Minestory {
                 9, 9, 12, 70, 70);
         }
 
-        protected override void LoadContent() {
+        protected override void Initialize() {
             Directory.CreateDirectory(AppDirectory);
             Settings = FileManager.LoadSettings(SettingsPath);
             Scores = FileManager.LoadHighscores(ScoresPath);
             CompressScores(); // TODO temp solution (see below)
+            MySqlHelper.Instance.Sync(this);
             FileManager.SaveHighscores(ScoresPath, Scores);
             if(Settings == null) Settings = CreateDefaultSettings();
+            base.Initialize();
+        }
+
+        protected override void LoadContent() {
             MainMenuView menuView = new MainMenuView(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             viewManager.Add(menuView);
@@ -146,7 +150,7 @@ namespace Chaotx.Minestory {
 
             Scores.ToList().ForEach(score => {
                 if(best.Where(score2 => score.Name.Equals(score2.Name)
-                && score.Settings.Difficulty == score2.Settings.Difficulty).Count() == 0)
+                && score.Difficulty == score2.Difficulty).Count() == 0)
                     best.Add(score);
             });
 

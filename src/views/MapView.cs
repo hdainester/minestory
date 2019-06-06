@@ -112,7 +112,7 @@ namespace Chaotx.Minestory {
         public GameOverView CreateGameOverView() {
             Highscore score = new Highscore("Unknown",
                 Map.RevealedMines, Map.TotalMines,
-                Map.ElapsedTime, Game.Settings);
+                Map.ElapsedTime, Game.Settings.Difficulty);
 
             return new GameOverView(this, score);
         }

@@ -9,23 +9,39 @@ namespace Chaotx.Minestory {
         public int TotalMines {get;}
         public TimeSpan Time {get;}
         public DateTime TimeStamp {get;}
+        public MapDifficulty Difficulty {get; set;}
+
+        [Obsolete("only Difficulty was required")]
         public GameSettings Settings {get;}
 
+        [Obsolete("Settings property was dropped")]
         public Highscore(
             string name, int minesHit, int totalMines,
             TimeSpan time, GameSettings settings)
+        : this(name, minesHit, totalMines, time, settings.Difficulty) {}
+
+        public Highscore(
+            string name, int minesHit, int totalMines,
+            TimeSpan time, DateTime stamp, MapDifficulty difficulty)
+        : this(name, minesHit, totalMines, time, difficulty) {
+            TimeStamp = stamp;
+        }
+
+        public Highscore(
+            string name, int minesHit, int totalMines,
+            TimeSpan time, MapDifficulty difficulty)
         {
             Name = name;
             MinesHit = minesHit;
             TotalMines = totalMines;
             Time = time;
-            Settings = settings;
             TimeStamp = DateTime.Now;
+            Difficulty = difficulty;
         }
 
         public int CompareTo(Highscore score) {
-            int diff1 = (((int)Settings.Difficulty)+1)%4;
-            int diff2 = (((int)score.Settings.Difficulty)+1)%4;
+            int diff1 = (((int)Difficulty)+1)%4;
+            int diff2 = (((int)score.Difficulty)+1)%4;
 
             if(diff1 == diff2) {
                 float mines1 = MinesHit/(float)TotalMines;
@@ -70,8 +86,8 @@ namespace Chaotx.Minestory {
                 && score.MinesHit.Equals(MinesHit)
                 && score.TotalMines.Equals(TotalMines)
                 && score.Time.Equals(Time)
-                && score.Settings.Equals(Settings)
-                && score.TimeStamp.Equals(TimeStamp);
+                && score.TimeStamp.Equals(TimeStamp)
+                && score.Difficulty.Equals(Difficulty);
         }
 
         public override int GetHashCode() {
@@ -81,7 +97,7 @@ namespace Chaotx.Minestory {
             hash = (hash*prim) ^ Name.GetHashCode();
             hash = (hash*prim) ^ MinesHit.GetHashCode();
             hash = (hash*prim) ^ Time.GetHashCode();
-            hash = (hash*prim) ^ Settings.GetHashCode();
+            hash = (hash*prim) ^ Difficulty.GetHashCode();
             hash = (hash*prim) ^ TimeStamp.GetHashCode();
             return hash;
         }

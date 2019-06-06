@@ -6,6 +6,7 @@ bin
 out
 obj
 
-## app
+## other
 dbxacctok
+*.dll
 doc

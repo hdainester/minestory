@@ -59,10 +59,10 @@ namespace Chaotx.Minestory {
             HPane hDiffArr = new HPane(leftDiff, hDiff, rightDiff);
             hDiffArr.HGrow = 1;
 
-            tabMap.Add(MapDifficulty.Easy, CreateScoresPane(game.Scores.Where(s => s.Settings.Difficulty == MapDifficulty.Easy).ToList()));
-            tabMap.Add(MapDifficulty.Medium, CreateScoresPane(game.Scores.Where(s => s.Settings.Difficulty == MapDifficulty.Medium).ToList()));
-            tabMap.Add(MapDifficulty.Hard, CreateScoresPane(game.Scores.Where(s => s.Settings.Difficulty == MapDifficulty.Hard).ToList()));
-            tabMap.Add(MapDifficulty.Custom, CreateScoresPane(game.Scores.Where(s => s.Settings.Difficulty == MapDifficulty.Custom).ToList()));
+            tabMap.Add(MapDifficulty.Easy, CreateScoresPane(game.Scores.Where(s => s.Difficulty == MapDifficulty.Easy).ToList()));
+            tabMap.Add(MapDifficulty.Medium, CreateScoresPane(game.Scores.Where(s => s.Difficulty == MapDifficulty.Medium).ToList()));
+            tabMap.Add(MapDifficulty.Hard, CreateScoresPane(game.Scores.Where(s => s.Difficulty == MapDifficulty.Hard).ToList()));
+            tabMap.Add(MapDifficulty.Custom, CreateScoresPane(game.Scores.Where(s => s.Difficulty == MapDifficulty.Custom).ToList()));
 
             TabPane tPane = new TabPane(
                 tabMap[MapDifficulty.Easy],
@@ -193,7 +193,7 @@ namespace Chaotx.Minestory {
                 }
 
                 TextItem index = new TextItem(font, i.ToString("D3") + ": ");
-                TextItem diff = new TextItem(font, score.Settings.Difficulty.ToString());
+                TextItem diff = new TextItem(font, score.Difficulty.ToString());
                 TextItem name = new TextItem(font, score.Name);
                 TextItem time = new TextItem(font, score.Time.ToString(@"hh\:mm\:ss\.ff"));
                 TextItem hits = new TextItem(font, score.MinesHit.ToString("D2"));

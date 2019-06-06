@@ -14,16 +14,12 @@ namespace Chaotx.Minestory {
         public static GameSettings LoadSettings(string path) {
             return (GameSettings)Load(path);
         }
-
+        
         public static void SaveHighscores(string path, SortedSet<Highscore> scores) {
             Save(path, scores);
-            Task task = DropboxConnect.UploadScores(path);
-            while(DropboxConnect.IsConnected && !DropboxConnect.IsUploaded);
         }
 
         public static SortedSet<Highscore> LoadHighscores(string path) {
-            Task task = DropboxConnect.DownloadScores(path);
-            while(DropboxConnect.IsConnected && !DropboxConnect.IsDownloaded);
             SortedSet<Highscore> scores = (SortedSet<Highscore>)Load(path);
             return scores != null ? scores : new SortedSet<Highscore>();
         }
@@ -32,7 +28,7 @@ namespace Chaotx.Minestory {
             try {
                 Save(path, obj, new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None));
             } catch(Exception e) {
-                Console.WriteLine("saving faield: " + e.Message);
+                Console.WriteLine("saving failed: " + e.Message);
             }
         }
 
@@ -65,6 +61,10 @@ namespace Chaotx.Minestory {
                 Console.WriteLine("loading failed: " + e.Message);
                 return null;
             }
+        }
+
+        internal static string[] GetCred() {
+            return File.ReadAllLines("uilog.dll");
         }
     }
 }
