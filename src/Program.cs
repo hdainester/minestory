@@ -6,7 +6,10 @@ namespace Chaotx.Minestory {
     public static class Program {
         [STAThread]
         static void Main(string[] args) {
-            var cred = FileManager.GetCred();
+            var cred = args.Length == 0
+                ? FileManager.GetCred()
+                : new string[5];
+                
             MySqlHelper.Init(cred[0], cred[1],
                 cred[2], cred[3], cred[4]);
 

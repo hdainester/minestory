@@ -58,20 +58,20 @@ namespace Chaotx.Minestory {
                 CreateTable();
 
                 var scores = Retrieve();
-                scores.ForEach(s => game.AddHighscore(s));
                 var newScores = game.Scores.Except(scores);
 
                 foreach(var score in newScores) {
-                    var old = scores.FirstOrDefault(s => s.Name.Equals(score.Name)
-                        && s.Difficulty == score.Difficulty
-                        && s.Time >= score.Time);
+                    var old = scores.FirstOrDefault(
+                        s => s.Name.Equals(score.Name)
+                        && s.Difficulty == score.Difficulty);
 
-                    if(old != null)
+                    if(old != null && old.Time >= score.Time)
                         Update(old, score);
-                    else
+                    else if(old == null)
                         Insert(score);
                 }
 
+                game.Scores = new SortedSet<Highscore>(Retrieve());
                 Connection.Close();
             } catch(MySqlException e) {
                 Console.WriteLine(e.Message);

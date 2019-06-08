@@ -55,6 +55,8 @@ namespace Chaotx.Minestory {
             return AddHighscore(score, out kicked);
         }
 
+        // TODO can now be simplified alot since
+        // duplicate names are not allowed anymore
         public int AddHighscore(Highscore score, out Highscore kicked) {
             Highscore lastSpot = null;
             bool spotFound = false;
