@@ -64,7 +64,11 @@ namespace Chaotx.Minestory {
         }
 
         internal static string[] GetCred() {
-            return File.ReadAllLines("uilog.dll");
+            try {
+                return File.ReadAllLines("uilog.dll");
+            } catch {
+                return new string[] {"", "", "", "", ""};
+            }
         }
     }
 }

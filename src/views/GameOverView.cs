@@ -193,7 +193,7 @@ namespace Chaotx.Minestory {
             } else {
                 Game.Scores.Remove(score);
                 if(kicked != null) Game.Scores.Add(kicked);
-                var ti = new TextItem(font, string.Format("A better score by {0} exists already at Rank {1}.", best.Name, p));
+                var ti = new TextItem(font, string.Format("A better score by {0} already exists at Rank {1}.", best.Name, p));
                 var fp = new FadingPane(2000);
                 fp.HGrow = fp.VGrow = 1;
                 ti.HAlign = HAlignment.Center;
